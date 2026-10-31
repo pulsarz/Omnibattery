@@ -46,6 +46,21 @@ SERIAL_BAUDRATE = 115200
 # spacing to MESSAGE_WAIT_MS_RS485_GATEWAY for any Marstek firmware version.
 CONF_RS485_GATEWAY = "rs485_gateway"
 
+# Zendure over MQTT (Hyper 2000). The entry keeps brand "zendure" so it shares
+# every Zendure behaviour; the transport key picks the MQTT driver instead of
+# the local HTTP one. host carries the device id and port is 0, as for Hoymiles.
+CONF_ZENDURE_TRANSPORT = "zendure_transport"
+ZENDURE_TRANSPORT_HTTP = "http"
+ZENDURE_TRANSPORT_MQTT = "mqtt"
+CONF_ZENDURE_DEVICE_ID = "device_id"
+CONF_ZENDURE_PRODUCT_KEY = "zendure_product_key"
+# "homeassistant" (HA's MQTT integration) or "custom" (own broker below).
+CONF_ZENDURE_MQTT_BROKER = "zendure_mqtt_broker"
+CONF_MQTT_HOST = "mqtt_host"
+CONF_MQTT_PORT = "mqtt_port"
+# "automation" (deviceAutomation, RAM) or "properties" (acMode + limits).
+CONF_ZENDURE_CONTROL_METHOD = "zendure_control_method"
+
 # Maximum power (W) per battery version — used by config_flow to set slider limits
 MAX_POWER_BY_VERSION = {
     "v2": 2500,

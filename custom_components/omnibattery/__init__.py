@@ -11557,6 +11557,9 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     from .const import (
         CONF_BATTERY_VERSION, DEFAULT_VERSION, CONF_SLAVE_ID, DEFAULT_SLAVE_ID,
         CONF_SERIAL_PORT, CONF_RS485_GATEWAY,
+        CONF_ZENDURE_TRANSPORT, ZENDURE_TRANSPORT_HTTP, CONF_ZENDURE_PRODUCT_KEY,
+        CONF_ZENDURE_MQTT_BROKER, CONF_MQTT_HOST, CONF_MQTT_PORT,
+        CONF_ZENDURE_CONTROL_METHOD,
     )
 
     for battery_config in entry.data["batteries"]:
@@ -11644,6 +11647,12 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
             brand=battery_config.get("brand", "marstek"),
             zendure_model=battery_config.get("zendure_model", "2400ac_pro"),
             hoymiles_model=battery_config.get("hoymiles_model"),
+            zendure_transport=battery_config.get(CONF_ZENDURE_TRANSPORT, ZENDURE_TRANSPORT_HTTP),
+            zendure_product_key=battery_config.get(CONF_ZENDURE_PRODUCT_KEY),
+            zendure_mqtt_broker=battery_config.get(CONF_ZENDURE_MQTT_BROKER, "homeassistant"),
+            mqtt_host=battery_config.get(CONF_MQTT_HOST),
+            mqtt_port=battery_config.get(CONF_MQTT_PORT),
+            zendure_control_method=battery_config.get(CONF_ZENDURE_CONTROL_METHOD, "automation"),
             serial_port=battery_config.get(CONF_SERIAL_PORT) or None,
             rs485_gateway=battery_config.get(CONF_RS485_GATEWAY, False),
             esphome_device_id=battery_config.get("esphome_device_id"),

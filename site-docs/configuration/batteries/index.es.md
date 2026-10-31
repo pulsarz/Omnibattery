@@ -9,6 +9,7 @@ Elige la vía que coincida con tu batería y con cómo está conectada a Home As
 | Marstek Venus conectada directamente o mediante una pasarela Modbus | Una conexión Ethernet, RS-485 o USB accesible | **Marstek Venus** | [Marstek](marstek.md) |
 | Marstek Venus conectada mediante un puente LilyGo | El firmware ESPHome compatible y su dispositivo en Home Assistant | **Marstek via LilyGo RS485 (ESPHome)** | [ESPHome / LilyGo](esphome-lilygo.md) |
 | Zendure SolarFlow 800, 800 Plus, 800 Pro, 1600 AC+, 2400 AC Pro/+, 3000 Mix AC+, 4000 Mix AC+ o 4000 Mix Pro | La dirección IP local del dispositivo y HEMS desactivado | **Zendure SolarFlow** | [Zendure](zendure.md) |
+| Zendure Hyper 2000 | El Hyper publicando en un broker MQTT de tu red y HEMS desactivado | **Zendure Hyper 2000 (MQTT)** | [Zendure Hyper 2000](zendure-hyper.md) |
 | Anker SOLIX Solarbank Max AC, 4 E5000 Pro o XE AC | Modbus TCP y Third-Party Control activados | **Anker SOLIX Solarbank Max AC / 4 E5000 Pro** (también detecta XE AC) | [Anker SOLIX](anker.md) |
 | Sessy Home Battery | Un dongle Sessy accesible y sus credenciales | **Sessy** | [Sessy](sessy.md) |
 | Hoymiles MS-A2 o HiBattery compatible | MQTT configurado en Home Assistant y el ID completo del dispositivo | **Hoymiles MQTT** | [Hoymiles MQTT](hoymiles.md) |

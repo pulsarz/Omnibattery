@@ -20,6 +20,7 @@ The battery or its bridge must be reachable over the relevant local connection. 
 |---|---|---|
 | **Marstek Venus E v2/v3, Venus A or Venus D** | Enable or add the connection described in the [Marstek guide](configuration/batteries/marstek.md). | Modbus TCP, Modbus RTU over USB–RS-485, or a LilyGo RS-485/ESPHome bridge for Venus E v2 |
 | **Zendure SolarFlow 800, 800 Plus, 800 Pro, 1600 AC+, 2400 AC+, 2400 AC Pro, 3000 Mix AC+, 4000 Mix AC+ or 4000 Mix Pro** | Keep the manufacturer's **HEMS** control disabled so it does not replace Omnibattery's power request. | Local HTTP API |
+| **Zendure Hyper 2000** | Redirect the Hyper from Zendure's cloud to an MQTT broker in your network (once, over Bluetooth) and disable **HEMS**. | MQTT through Home Assistant or your own broker |
 | **Anker SOLIX Solarbank Max AC, Solarbank 4 E5000 Pro or Solarbank XE AC** | Enable **Third-Party Control** in the Anker app and disconnect any other Modbus client. | Modbus TCP |
 | **Huawei SUN2000 + LUNA2000** | Prepare the inverter's Modbus connection. The default control method also needs the Huawei Solar integration. | Modbus TCP through the inverter or a shared proxy |
 | **Sessy Home Battery** | Have the local credentials printed on the Sessy dongle available. | Local HTTP API |

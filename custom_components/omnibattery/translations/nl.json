@@ -120,7 +120,7 @@
           "brand": "Batterijmerk"
         },
         "data_description": {
-          "brand": "Marstek Venus: Modbus TCP. Zendure SolarFlow: local HTTP (HEMS must be disabled for Omnibattery control). Anker SOLIX Solarbank Max AC / 4 E5000 Pro: Modbus TCP (enable Modbus TCP under Third-Party Control in the Anker app; only one Modbus client at a time). Sessy: local HTTP."
+          "brand": "Marstek Venus: Modbus TCP. Zendure SolarFlow: local HTTP (HEMS must be disabled for Omnibattery control). Anker SOLIX Solarbank Max AC / 4 E5000 Pro: Modbus TCP (enable Modbus TCP under Third-Party Control in the Anker app; only one Modbus client at a time). Sessy: local HTTP. Zendure Hyper 2000: MQTT via je lokale broker."
         }
       },
       "battery_connection": {
@@ -157,6 +157,40 @@
           "name": "Beschrijvende naam om deze batterij te identificeren",
           "host": "IP-adres van de Zendure SolarFlow op uw lokale netwerk",
           "port": "HTTP-poort (standaard 80)"
+        }
+      },
+      "battery_connection_zendure_mqtt": {
+        "title": "Batterij {battery_num} configureren — Verbinding (Zendure Hyper 2000)",
+        "description": "De Hyper 2000 wordt via MQTT aangestuurd. Hij moet al naar je broker publiceren (via Bluetooth omgeleid van de Zendure-cloud). Laat het apparaat-ID leeg om hem automatisch te vinden. Houd HEMS / de slimme CT-modus uitgeschakeld in de Zendure-app.",
+        "data": {
+          "name": "Naam",
+          "device_id": "Apparaat-ID",
+          "zendure_mqtt_broker": "MQTT-broker",
+          "mqtt_host": "Broker-host",
+          "mqtt_port": "Broker-poort",
+          "username": "Broker-gebruikersnaam",
+          "password": "Broker-wachtwoord",
+          "zendure_control_method": "Aansturingsmethode"
+        },
+        "data_description": {
+          "name": "Beschrijvende naam om deze batterij te herkennen",
+          "device_id": "Het ID van 8 tekens in de topics van het apparaat (/productKey/deviceId/properties/report). Leeg laten om het te detecteren.",
+          "zendure_mqtt_broker": "Home Assistant: de broker die de MQTT-integratie al gebruikt. Eigen broker: rechtstreeks verbinden met de host, poort en inloggegevens hieronder.",
+          "mqtt_host": "Alleen eigen broker: hostnaam of IP-adres, bijvoorbeeld de machine met je Mosquitto-container.",
+          "mqtt_port": "Alleen eigen broker (standaard 1883).",
+          "username": "Alleen eigen broker; leeg laten voor anonieme toegang.",
+          "password": "Alleen eigen broker; leeg laten voor anonieme toegang.",
+          "zendure_control_method": "Automatisering (aanbevolen) stuurt setpoints zoals de Zendure-app, alleen in RAM. Eigenschappen schrijft acMode en de in-/uitgangslimieten, voor firmware die automatiseringsopdrachten negeert."
+        }
+      },
+      "battery_connection_zendure_mqtt_pick": {
+        "title": "Batterij {battery_num} — Kies je Zendure Hyper",
+        "description": "Meerdere Zendure-apparaten antwoorden via deze broker. Kies het apparaat voor batterij {battery_num}; al toegevoegde apparaten staan er niet tussen.",
+        "data": {
+          "device_id": "Apparaat"
+        },
+        "data_description": {
+          "device_id": "Apparaat-ID, batterijpacks, capaciteit en huidige laadtoestand zoals gemeld."
         }
       },
       "battery_connection_hoymiles": {
@@ -594,6 +628,40 @@
           "port": "HTTP-poort (standaard 80)"
         }
       },
+      "reconfigure_battery_zendure_mqtt": {
+        "title": "Batterij {battery_num} opnieuw configureren — Zendure Hyper 2000 (MQTT)",
+        "description": "Wijzig de broker of het apparaat van de Zendure Hyper 2000 batterij {battery_num}. Alle andere instellingen blijven behouden.",
+        "data": {
+          "name": "Naam",
+          "device_id": "Apparaat-ID",
+          "zendure_mqtt_broker": "MQTT-broker",
+          "mqtt_host": "Broker-host",
+          "mqtt_port": "Broker-poort",
+          "username": "Broker-gebruikersnaam",
+          "password": "Broker-wachtwoord",
+          "zendure_control_method": "Aansturingsmethode"
+        },
+        "data_description": {
+          "name": "Beschrijvende naam om deze batterij te herkennen",
+          "device_id": "Het ID van 8 tekens in de topics van het apparaat (/productKey/deviceId/properties/report). Leeg laten om het te detecteren.",
+          "zendure_mqtt_broker": "Home Assistant: de broker die de MQTT-integratie al gebruikt. Eigen broker: rechtstreeks verbinden met de host, poort en inloggegevens hieronder.",
+          "mqtt_host": "Alleen eigen broker: hostnaam of IP-adres, bijvoorbeeld de machine met je Mosquitto-container.",
+          "mqtt_port": "Alleen eigen broker (standaard 1883).",
+          "username": "Alleen eigen broker; leeg laten voor anonieme toegang.",
+          "password": "Alleen eigen broker; leeg laten voor anonieme toegang.",
+          "zendure_control_method": "Automatisering (aanbevolen) stuurt setpoints zoals de Zendure-app, alleen in RAM. Eigenschappen schrijft acMode en de in-/uitgangslimieten, voor firmware die automatiseringsopdrachten negeert."
+        }
+      },
+      "reconfigure_battery_zendure_mqtt_pick": {
+        "title": "Batterij {battery_num} — Kies je Zendure Hyper",
+        "description": "Meerdere Zendure-apparaten antwoorden via deze broker. Kies het apparaat voor batterij {battery_num}; al toegevoegde apparaten staan er niet tussen.",
+        "data": {
+          "device_id": "Apparaat"
+        },
+        "data_description": {
+          "device_id": "Apparaat-ID, batterijpacks, capaciteit en huidige laadtoestand zoals gemeld."
+        }
+      },
       "reconfigure_battery_sessy": {
         "title": "Batterij {battery_num} opnieuw configureren — Verbinding (Sessy)",
         "description": "Werk de verbindingsgegevens voor de Sessy-batterij {battery_num} bij. Alle overige instellingen blijven behouden.",
@@ -706,6 +774,12 @@
       "invalid_mac": "Dit lijkt geen MAC-adres te zijn. Er worden zes paren hexadecimale cijfers verwacht, bijvoorbeeld dc:04:5a:14:6b:33.",
       "cannot_connect": "Kan geen verbinding maken met de batterij. Controleer het IP-adres en of de batterij toegankelijk is op het netwerk.",
       "hoymiles_no_power_ctrl": "Deze MQTT-apparaat-ID publiceert telemetrie maar geen vermogensregeling. In een gekoppeld Hoymiles-systeem is alleen de master aanstuurbaar: voeg de apparaat-ID van de master één keer toe, niet die van de slave.",
+      "mqtt_host_required": "Vul de broker-host in of kies de MQTT-broker van Home Assistant.",
+      "mqtt_not_configured": "De MQTT-integratie van Home Assistant is niet ingesteld. Stel die eerst in of kies je eigen broker.",
+      "mqtt_broker_unreachable": "Kan geen verbinding maken met de MQTT-broker. Controleer host, poort en inloggegevens.",
+      "zendure_no_device_found": "Binnen 30 seconden heeft geen Zendure-apparaat naar deze broker gepubliceerd. Controleer of de Hyper naar deze broker is omgeleid, of vul het apparaat-ID in.",
+      "zendure_all_configured": "In 30 seconden waren op deze broker alleen al ingestelde Zendure-apparaten te horen ({devices}). Een inactieve Hyper kan stil blijven: vul het apparaat-ID in, of herstart de Hyper en probeer het opnieuw.",
+      "zendure_no_response": "Het apparaat antwoordde niet via deze broker. Controleer het apparaat-ID en of de Hyper met deze broker is verbonden.",
       "no_battery": "Inverter reached, but it reports no battery. Check that the LUNA2000 is attached and the Modbus slave ID points at the inverter.",
       "huawei_device_required": "Without direct Modbus writes, Omnibattery controls the battery through the Huawei Solar integration's services, and those address it by device. Either pick the device or enable direct writes.",
       "huawei_solar_missing": "Without direct Modbus writes, Omnibattery controls the battery through the Huawei Solar integration's services — but that integration is not set up here. Install and configure it via HACS, or enable direct writes.",
@@ -852,7 +926,7 @@
           "brand": "Batterijmerk"
         },
         "data_description": {
-          "brand": "Marstek Venus: Modbus TCP. Zendure SolarFlow: local HTTP (HEMS must be disabled for Omnibattery control). Anker SOLIX Solarbank Max AC / 4 E5000 Pro: Modbus TCP (enable Modbus TCP under Third-Party Control in the Anker app; only one Modbus client at a time). Sessy: local HTTP."
+          "brand": "Marstek Venus: Modbus TCP. Zendure SolarFlow: local HTTP (HEMS must be disabled for Omnibattery control). Anker SOLIX Solarbank Max AC / 4 E5000 Pro: Modbus TCP (enable Modbus TCP under Third-Party Control in the Anker app; only one Modbus client at a time). Sessy: local HTTP. Zendure Hyper 2000: MQTT via je lokale broker."
         }
       },
       "battery_connection": {
@@ -889,6 +963,40 @@
           "name": "Beschrijvende naam om deze batterij te identificeren",
           "host": "IP-adres van de Zendure SolarFlow op uw lokale netwerk",
           "port": "HTTP-poort (standaard 80)"
+        }
+      },
+      "battery_connection_zendure_mqtt": {
+        "title": "Batterij {battery_num} configureren — Verbinding (Zendure Hyper 2000)",
+        "description": "De Hyper 2000 wordt via MQTT aangestuurd. Hij moet al naar je broker publiceren (via Bluetooth omgeleid van de Zendure-cloud). Laat het apparaat-ID leeg om hem automatisch te vinden. Houd HEMS / de slimme CT-modus uitgeschakeld in de Zendure-app.",
+        "data": {
+          "name": "Naam",
+          "device_id": "Apparaat-ID",
+          "zendure_mqtt_broker": "MQTT-broker",
+          "mqtt_host": "Broker-host",
+          "mqtt_port": "Broker-poort",
+          "username": "Broker-gebruikersnaam",
+          "password": "Broker-wachtwoord",
+          "zendure_control_method": "Aansturingsmethode"
+        },
+        "data_description": {
+          "name": "Beschrijvende naam om deze batterij te herkennen",
+          "device_id": "Het ID van 8 tekens in de topics van het apparaat (/productKey/deviceId/properties/report). Leeg laten om het te detecteren.",
+          "zendure_mqtt_broker": "Home Assistant: de broker die de MQTT-integratie al gebruikt. Eigen broker: rechtstreeks verbinden met de host, poort en inloggegevens hieronder.",
+          "mqtt_host": "Alleen eigen broker: hostnaam of IP-adres, bijvoorbeeld de machine met je Mosquitto-container.",
+          "mqtt_port": "Alleen eigen broker (standaard 1883).",
+          "username": "Alleen eigen broker; leeg laten voor anonieme toegang.",
+          "password": "Alleen eigen broker; leeg laten voor anonieme toegang.",
+          "zendure_control_method": "Automatisering (aanbevolen) stuurt setpoints zoals de Zendure-app, alleen in RAM. Eigenschappen schrijft acMode en de in-/uitgangslimieten, voor firmware die automatiseringsopdrachten negeert."
+        }
+      },
+      "battery_connection_zendure_mqtt_pick": {
+        "title": "Batterij {battery_num} — Kies je Zendure Hyper",
+        "description": "Meerdere Zendure-apparaten antwoorden via deze broker. Kies het apparaat voor batterij {battery_num}; al toegevoegde apparaten staan er niet tussen.",
+        "data": {
+          "device_id": "Apparaat"
+        },
+        "data_description": {
+          "device_id": "Apparaat-ID, batterijpacks, capaciteit en huidige laadtoestand zoals gemeld."
         }
       },
       "battery_connection_esphome": {
@@ -1322,6 +1430,12 @@
       "invalid_mac": "Dit lijkt geen MAC-adres te zijn. Er worden zes paren hexadecimale cijfers verwacht, bijvoorbeeld dc:04:5a:14:6b:33.",
       "cannot_connect": "Kan geen verbinding maken met de batterij. Controleer het IP-adres en of de batterij toegankelijk is op het netwerk.",
       "hoymiles_no_power_ctrl": "Deze MQTT-apparaat-ID publiceert telemetrie maar geen vermogensregeling. In een gekoppeld Hoymiles-systeem is alleen de master aanstuurbaar: voeg de apparaat-ID van de master één keer toe, niet die van de slave.",
+      "mqtt_host_required": "Vul de broker-host in of kies de MQTT-broker van Home Assistant.",
+      "mqtt_not_configured": "De MQTT-integratie van Home Assistant is niet ingesteld. Stel die eerst in of kies je eigen broker.",
+      "mqtt_broker_unreachable": "Kan geen verbinding maken met de MQTT-broker. Controleer host, poort en inloggegevens.",
+      "zendure_no_device_found": "Binnen 30 seconden heeft geen Zendure-apparaat naar deze broker gepubliceerd. Controleer of de Hyper naar deze broker is omgeleid, of vul het apparaat-ID in.",
+      "zendure_all_configured": "In 30 seconden waren op deze broker alleen al ingestelde Zendure-apparaten te horen ({devices}). Een inactieve Hyper kan stil blijven: vul het apparaat-ID in, of herstart de Hyper en probeer het opnieuw.",
+      "zendure_no_response": "Het apparaat antwoordde niet via deze broker. Controleer het apparaat-ID en of de Hyper met deze broker is verbonden.",
       "no_battery": "Inverter reached, but it reports no battery. Check that the LUNA2000 is attached and the Modbus slave ID points at the inverter.",
       "huawei_device_required": "Without direct Modbus writes, Omnibattery controls the battery through the Huawei Solar integration's services, and those address it by device. Either pick the device or enable direct writes.",
       "huawei_solar_missing": "Without direct Modbus writes, Omnibattery controls the battery through the Huawei Solar integration's services — but that integration is not set up here. Install and configure it via HACS, or enable direct writes.",
@@ -1367,6 +1481,18 @@
         "hibattery_1920_ac": "HiBattery 1920 AC",
         "hibattery_4020_x": "HiBattery 4020 X",
         "hibattery_4020_ac": "HiBattery 4020 AC"
+      }
+    },
+    "zendure_mqtt_broker": {
+      "options": {
+        "homeassistant": "MQTT-broker van Home Assistant",
+        "custom": "Eigen broker"
+      }
+    },
+    "zendure_control_method": {
+      "options": {
+        "automation": "Automatisering (aanbevolen)",
+        "properties": "Eigenschappen (acMode + limieten)"
       }
     },
     "battery_phase": {
