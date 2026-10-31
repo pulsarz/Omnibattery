@@ -185,6 +185,13 @@ def test_non_ip_brands_are_left_alone(brand):
     assert evaluate_lease(batteries, MAC_A, "192.168.1.180").reason == NOT_IP_BASED
 
 
+def test_a_zendure_over_mqtt_is_left_alone():
+    """A Hyper 2000 stores its MQTT device id in host; there is no IP."""
+    batteries = [{**battery(brand="zendure", host="Ab12Cd34"), "zendure_transport": "mqtt"}]
+    assert not is_ip_based(batteries[0])
+    assert evaluate_lease(batteries, MAC_A, "192.168.1.180").reason == NOT_IP_BASED
+
+
 def test_a_serial_marstek_is_left_alone():
     """Serial stores a device path in host; there is no address to update."""
     batteries = [battery(host="/dev/ttyUSB0", serial_port="/dev/ttyUSB0")]

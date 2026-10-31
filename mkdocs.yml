@@ -78,6 +78,7 @@ plugins:
             Marstek: Marstek
             ESPHome / LilyGo: ESPHome / LilyGo
             Zendure: Zendure
+            Zendure Hyper 2000: Zendure Hyper 2000
             Anker SOLIX: Anker SOLIX
             Sessy: Sessy
             Hoymiles MQTT: Hoymiles MQTT
@@ -171,6 +172,7 @@ nav:
           - Marstek: configuration/batteries/marstek.md
           - ESPHome / LilyGo: configuration/batteries/esphome-lilygo.md
           - Zendure: configuration/batteries/zendure.md
+          - Zendure Hyper 2000: configuration/batteries/zendure-hyper.md
           - Anker SOLIX: configuration/batteries/anker.md
           - Sessy: configuration/batteries/sessy.md
           - Hoymiles MQTT: configuration/batteries/hoymiles.md

@@ -70,6 +70,9 @@ ZENDURE_MODEL_2400AC_PLUS = "2400ac_plus"
 ZENDURE_MODEL_3000MIX_AC_PLUS = "3000mix_ac_plus"
 ZENDURE_MODEL_4000MIX_AC_PLUS = "4000mix_ac_plus"
 ZENDURE_MODEL_4000MIX_PRO = "4000mix_pro"
+# Reached over MQTT (see drivers/zendure_mqtt.py), never via the local HTTP API;
+# listed here so the shared power-envelope lookup covers it.
+ZENDURE_MODEL_HYPER_2000 = "hyper_2000"
 
 # Grid-connected AC limits.  The SolarFlow 800, 800 Plus and 800 Pro all have
 # an 800 W grid output; their AC charging input is limited to 1000 W.  The
@@ -89,6 +92,9 @@ _MODEL_POWER_LIMITS: dict[str, tuple[int, int]] = {
     ZENDURE_MODEL_4000MIX_AC_PLUS: (4000, 4000),
     # The 4000 Mix Pro has the same bidirectional AC envelope as the AC+ model.
     ZENDURE_MODEL_4000MIX_PRO: (4000, 4000),
+    # The Hyper 2000 charges from and feeds into the grid at up to 1200 W; its
+    # inverseMaxPower may announce a lower, region-specific output cap.
+    ZENDURE_MODEL_HYPER_2000: (1200, 1200),
 }
 
 # Keys absent on AC-coupled models (no DC-coupled MPPT, no dedicated

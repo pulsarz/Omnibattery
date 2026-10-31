@@ -23,6 +23,7 @@ flowchart TD
     COORD --> DRIVER[BatteryDriver semantic contract]
     DRIVER --> M[MarstekModbusDriver]
     DRIVER --> Z[ZendureLocalDriver]
+    DRIVER --> ZM[ZendureMqttDriver]
     DRIVER --> A[AnkerModbusDriver]
     DRIVER --> E[EsphomeEntityDriver]
     DRIVER --> S[SessyLocalDriver]
@@ -93,12 +94,13 @@ The default values in `DriverCapabilities` preserve the older register-backed be
 
 ## Supported drivers
 
-The package exports seven concrete drivers, and `MarstekVenusDataUpdateCoordinator.__init__()` constructs all seven from the configured brand.
+The package exports eight concrete drivers, and `MarstekVenusDataUpdateCoordinator.__init__()` constructs all eight from the configured brand.
 
 | File | Class | Hardware and transport |
 |---|---|---|
 | `drivers/marstek.py` | `MarstekModbusDriver` | Marstek Venus families over Modbus TCP or Modbus RTU. |
 | `drivers/zendure.py` | `ZendureLocalDriver` | Zendure SolarFlow families through the local HTTP API. |
+| `drivers/zendure_mqtt.py` | `ZendureMqttDriver` | Zendure Hyper 2000 over MQTT, through Home Assistant's broker or a broker of its own. |
 | `drivers/anker.py` | `AnkerModbusDriver` | Anker SOLIX Solarbank families over Modbus TCP. |
 | `drivers/esphome.py` | `EsphomeEntityDriver` | Marstek hardware behind a LilyGo RS-485 bridge, using ESPHome entities in Home Assistant. |
 | `drivers/sessy.py` | `SessyLocalDriver` | Sessy through its authenticated local HTTP API. |

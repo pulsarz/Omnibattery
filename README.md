@@ -6,6 +6,7 @@
 
 - Marstek Venus E and C (v2 and v3), Venus D and Venus A via Modbus TCP
 - Zendure SolarFlow 4000 Mix Pro, 4000 Mix AC+, 3000 Mix AC+, 2400 AC+, 2400 AC Pro, 1600 AC+, 800 Pro, 800 Plus and 800 (Local API)
+- Zendure Hyper 2000 (MQTT, through Home Assistant's broker or your own)
 - Anker SOLIX Solarbank Max AC and Solarbank 4 E5000 Pro via Modbus TCP (thanks @wouterbouvy!)
 - Sessy Home Battery (Looking for testers!!!)
 - Hoymiles MS-A2 and HiBattery MQTT models
@@ -54,9 +55,10 @@ Full documentation (configuration, features, entities, troubleshooting) is avail
 
 | Requirement | Details |
 |---|---|
-| Battery | Marstek Venus E v2/v3, Venus A, Venus D, Zendure SolarFlow 4000 Mix Pro / 4000 Mix AC+ / 3000 Mix AC+, 2400 AC+, 2400 AC Pro, Anker SOLIX Solarbank Max AC / 4 E5000 Pro |
+| Battery | Marstek Venus E v2/v3, Venus A, Venus D, Zendure SolarFlow 4000 Mix Pro / 4000 Mix AC+ / 3000 Mix AC+, 2400 AC+, 2400 AC Pro, Zendure Hyper 2000 (MQTT), Anker SOLIX Solarbank Max AC / 4 E5000 Pro |
 | Modbus bridge | Elfin-EW11 or compatible RS485-to-TCP converter. Venus E v3, Venus A and Venus D can also be connected via Ethernet with native Modbus TCP support. Anker Solarbank Max AC and 4 E5000 Pro use native Modbus TCP (enable in the Anker app under Third-Party Control; only one Modbus client at a time). |
 | Wireless connection | Required for Zendure SolarFlow 4000 Mix AC+, 3000 Mix AC+, 2400 AC+ and 2400 AC Pro |
+| MQTT broker | Required for Zendure Hyper 2000: Home Assistant's MQTT broker or your own, with the Hyper redirected to it from the Zendure cloud |
 | Grid sensor | HA sensor measuring total grid consumption (e.g. Shelly EM3, Neurio, smart meter) |
 | Network | Battery reachable by IP from Home Assistant |
 | Home Assistant | Recent version (tested on 2024.x+) |
