@@ -115,8 +115,9 @@ _KICK_AFTER_S = 10.0
 _KICK_HOLD_S = 15.0
 # Power in the commanded direction that counts as "running".
 _RUNNING_W = 20
-# A power value missing from more than two consecutive dumps is zero: the device
-# omits zero-valued powers from getAll rather than reporting 0.
+# A power value missing from the reports for this long, while other reports
+# keep arriving, is zero: the device omits zero-valued powers from getAll
+# rather than reporting 0. Silence is not zero (see _power).
 _POWER_ZERO_AFTER_S = 2.5 * _REFRESH_INTERVAL_S
 # No message at all for this long means the device (or the broker path) is gone.
 _STALE_AFTER_S = 4 * _REFRESH_INTERVAL_S
@@ -943,7 +944,15 @@ class ZendureMqttDriver(BatteryDriver):
 
     def _power(self, prop: str) -> float | int:
         seen = self._power_seen.get(prop)
-        if seen is None or self._clock() - seen > _POWER_ZERO_AFTER_S:
+        if seen is None:
+            return 0
+        # Zero only a power that other reports keep arriving *without*: that is
+        # how the device says "0". Measured against the last report rather than
+        # the clock, so a device that falls silent keeps its last reading until
+        # the liveness check declares it unreachable, instead of looking like a
+        # battery that stopped delivering for the ~45 s in between.
+        last = self._last_message if self._last_message is not None else seen
+        if last - seen > _POWER_ZERO_AFTER_S:
             return 0
         value = _number(self._props.get(prop))
         return value if value is not None else 0

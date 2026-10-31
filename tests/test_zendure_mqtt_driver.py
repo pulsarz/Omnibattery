@@ -770,3 +770,19 @@ async def test_a_kick_is_dropped_on_direction_change_stop_and_close():
     sent = len(broker.published)
     await asyncio.sleep(0.1)
     assert len(broker.published) == sent
+
+
+@pytest.mark.asyncio
+async def test_a_silent_device_keeps_its_last_power_until_unreachable():
+    """Silence is not zero: no false non-delivery before the liveness check."""
+    clock = Clock()
+    driver, broker, _ = await _driver(clock=clock)
+    assert await driver.connect()
+    broker.deliver(REPORT, {"properties": {"outputPackPower": 600, "gridInputPower": 600}})
+    clock.now += 100  # past the 75 s zero rule, inside the 120 s liveness window
+    data = await driver.read_telemetry()
+    assert data["battery_power"] == 600
+    assert data[DELIVERED_AC_POWER_KEY] == 600
+    clock.now += 30  # now past liveness: unreachable, not "0 W"
+    assert await driver.read_telemetry() == {}
+    await driver.close()
