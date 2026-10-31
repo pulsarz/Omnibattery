@@ -102,6 +102,19 @@ _REFRESH_INTERVAL_S = 30.0
 # Re-send the active setpoint this often even if the controller has not changed
 # it, so a device that drops back to its own program is pulled back in.
 _COMMAND_KEEPALIVE_S = 60.0
+# Smallest power the Hyper reliably acts on, the start power Zendure's own
+# integration uses. Requests between 1 W and this are rounded up rather than
+# sent: a smaller one can leave the device idle, which the controller then
+# reads as a battery refusing to deliver and excludes for minutes.
+_MIN_POWER_W = 50
+# Kickstart, also after Zendure's integration: a small request that has not
+# produced any power this long after the start is re-sent at _KICK_POWER_W
+# until power flows (at most _KICK_HOLD_S), then the request is restored.
+_KICK_POWER_W = 100
+_KICK_AFTER_S = 10.0
+_KICK_HOLD_S = 15.0
+# Power in the commanded direction that counts as "running".
+_RUNNING_W = 20
 # A power value missing from more than two consecutive dumps is zero: the device
 # omits zero-valued powers from getAll rather than reporting 0.
 _POWER_ZERO_AFTER_S = 2.5 * _REFRESH_INTERVAL_S
@@ -628,6 +641,8 @@ class ZendureMqttDriver(BatteryDriver):
             setpoint_confirm_reliable=False,
             actuator_latency_s=3.0,
             readback_latency_s=6.0,
+            min_charge_power_w=_MIN_POWER_W,
+            min_discharge_power_w=_MIN_POWER_W,
             telemetry_liveness_checked=True,
             charge_cutoff_range=(70.0, 100.0),
             discharge_cutoff_range=(5.0, 50.0),
@@ -664,6 +679,13 @@ class ZendureMqttDriver(BatteryDriver):
         self._refresh_task: asyncio.Task | None = None
         self._last_command_w: int | None = None
         self._last_command_at: float | None = None
+        # Kickstart state: the task waiting to nudge a small start, and whether
+        # a nudge is being held right now. Instance attributes so tests can
+        # shorten the timings.
+        self._kick_task: asyncio.Task | None = None
+        self._kicking = False
+        self._kick_after_s = _KICK_AFTER_S
+        self._kick_hold_s = _KICK_HOLD_S
 
     # --- definitions --------------------------------------------------------
 
@@ -789,6 +811,7 @@ class ZendureMqttDriver(BatteryDriver):
 
     async def close(self) -> None:
         self._connected = False
+        await self._cancel_kick()
         task, self._refresh_task = self._refresh_task, None
         if task is not None:
             task.cancel()
@@ -1083,15 +1106,99 @@ class ZendureMqttDriver(BatteryDriver):
             return {"acMode": _AC_MODE_CHARGE, "inputLimit": net_power_w, "outputLimit": 0, "smartMode": 1}
         return {"acMode": _AC_MODE_DISCHARGE, "outputLimit": -net_power_w, "inputLimit": 0, "smartMode": 1}
 
-    async def _send_setpoint(self, net_power_w: int) -> bool:
+    def _wire_power(self, request_w: int, *, kick: bool | None = None) -> int:
+        """What is actually sent for ``request_w``: floored, and kicked if active."""
+        if request_w == 0:
+            return 0
+        sign = 1 if request_w > 0 else -1
+        limit = (
+            self._capabilities.max_charge_power_w
+            if sign > 0
+            else self._capabilities.max_discharge_power_w
+        )
+        magnitude = max(abs(request_w), _MIN_POWER_W)
+        if self._kicking if kick is None else kick:
+            magnitude = max(magnitude, _KICK_POWER_W)
+        return sign * min(magnitude, limit)
+
+    async def _send_setpoint(self, request_w: int) -> bool:
+        """Send ``request_w`` (as floored/kicked wire power) and remember the request.
+
+        The request, not the wire power, is what ``commanded_net_power`` reports,
+        so the controller's skip-if-unchanged guard keeps working while a small
+        request is being rounded up or kicked.
+        """
+        wire_w = self._wire_power(request_w)
         if self._control_method == CONTROL_PROPERTIES:
-            sent = await self._publish("properties/write", {"properties": self._properties_body(net_power_w)})
+            sent = await self._publish("properties/write", {"properties": self._properties_body(wire_w)})
         else:
-            sent = await self._publish("function/invoke", self._automation_body(net_power_w))
+            sent = await self._publish("function/invoke", self._automation_body(wire_w))
         if sent:
-            self._last_command_w = net_power_w
+            self._last_command_w = request_w
             self._last_command_at = self._clock()
         return sent
+
+    # --- kickstart ------------------------------------------------------------
+
+    def _running_toward(self, sign: int) -> bool:
+        """Whether the device is moving power in direction ``sign`` right now."""
+        if not self._is_live():
+            return False
+        snapshot = self._snapshot()
+        delivered = max(
+            sign * float(snapshot.get("battery_power") or 0),
+            sign * float(snapshot.get(DELIVERED_AC_POWER_KEY) or 0),
+        )
+        return delivered >= _RUNNING_W
+
+    async def _cancel_kick(self) -> None:
+        task, self._kick_task = self._kick_task, None
+        self._kicking = False
+        if task is not None and not task.done() and task is not asyncio.current_task():
+            task.cancel()
+            try:
+                await task
+            except (asyncio.CancelledError, Exception):
+                pass
+
+    async def _kick_if_stuck(self, sign: int) -> None:
+        """Nudge a small start that has produced nothing, then restore the request."""
+        await asyncio.sleep(self._kick_after_s)
+        if (
+            not self._connected
+            or self._last_command_w is None
+            or (1 if self._last_command_w > 0 else -1 if self._last_command_w < 0 else 0) != sign
+            or self._running_toward(sign)
+        ):
+            return
+        _LOGGER.info(
+            "Zendure MQTT: %s did not start on %d W; kickstarting at %d W",
+            self.device_id, self._wire_power(self._last_command_w, kick=False), sign * _KICK_POWER_W,
+        )
+        self._kicking = True
+        try:
+            async with self._write_lock:
+                await self._send_setpoint(self._last_command_w)
+            deadline = self._clock() + self._kick_hold_s
+            while self._clock() < deadline and not self._running_toward(sign):
+                await asyncio.sleep(min(1.0, self._kick_hold_s))
+        finally:
+            self._kicking = False
+        if (
+            self._connected
+            and self._last_command_w is not None
+            and (1 if self._last_command_w > 0 else -1 if self._last_command_w < 0 else 0) == sign
+        ):
+            async with self._write_lock:
+                await self._send_setpoint(self._last_command_w)
+
+    def _schedule_kick(self, sign: int) -> None:
+        coro = self._kick_if_stuck(sign)
+        create = getattr(self.hass, "async_create_background_task", None)
+        if create is not None:
+            self._kick_task = create(coro, f"omnibattery_zendure_kick_{self.device_id}")
+        else:
+            self._kick_task = asyncio.ensure_future(coro)
 
     def _clamp(self, net_power_w: int) -> int:
         return max(
@@ -1109,6 +1216,13 @@ class ZendureMqttDriver(BatteryDriver):
         if not self._connected:
             return SetpointResult(False, 0, False, failure_reason="not_connected")
         applied = self._clamp(net_power_w)
+        sign = 1 if applied > 0 else -1 if applied < 0 else 0
+        previous = self._last_command_w or 0
+        previous_sign = 1 if previous > 0 else -1 if previous < 0 else 0
+        starting = sign != previous_sign
+        if starting:
+            # A new start (or stop): any kick belongs to the old one.
+            await self._cancel_kick()
         try:
             async with self._write_lock:
                 sent = await self._send_setpoint(applied)
@@ -1118,12 +1232,21 @@ class ZendureMqttDriver(BatteryDriver):
             return SetpointResult(False, applied, False, failure_reason="write_failed")
         if not sent:
             return SetpointResult(False, applied, False, failure_reason="product_key_unknown")
+        if (
+            starting
+            and sign != 0
+            and abs(self._wire_power(applied, kick=False)) < _KICK_POWER_W
+            and not self._running_toward(sign)
+        ):
+            self._schedule_kick(sign)
         battery_power = None
         if read_back and self._is_live():
             battery_power = int(self._snapshot()["battery_power"])
+        # Report the power the device is asked for in steady state (floored);
+        # commanded_net_power keeps the controller's own request.
         return SetpointResult(
             True,
-            applied,
+            self._wire_power(applied, kick=False),
             False,
             battery_power_w=battery_power,
             applied={_COMMANDED_KEY: applied},
@@ -1182,6 +1305,7 @@ class ZendureMqttDriver(BatteryDriver):
 
     async def standby(self) -> bool:
         """Hold the battery idle (0 W) — used on teardown."""
+        await self._cancel_kick()
         try:
             async with self._write_lock:
                 return await self._send_setpoint(0)
