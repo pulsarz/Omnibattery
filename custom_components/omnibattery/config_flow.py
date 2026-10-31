@@ -124,6 +124,7 @@ from .const import (
     PRICE_INTEGRATION_CKW,
     PRICE_INTEGRATION_EPEX,
     PRICE_INTEGRATION_ENTSOE,
+    PRICE_INTEGRATION_BE_ELECTRICITY,
     PRICE_INTEGRATION_TIBBER,
     PRICE_INTEGRATION_ZONNEPLAN,
     CONF_METER_INVERTED,
@@ -162,7 +163,7 @@ from .drivers.hoymiles import (
     hoymiles_model_profile,
 )
 from .pricing.nordpool import is_official_nordpool_sensor
-from .pricing.calculations import parse_zonneplan_prices
+from .pricing.calculations import parse_be_electricity_prices, parse_zonneplan_prices
 
 _ANKER_MAX_POWER_W = 3500
 _SESSY_MAX_CHARGE_POWER_W = 2200
@@ -206,6 +207,7 @@ def _price_integration_options() -> list[str]:
         PRICE_INTEGRATION_ENTSOE,
         PRICE_INTEGRATION_TIBBER,
         PRICE_INTEGRATION_ZONNEPLAN,
+        PRICE_INTEGRATION_BE_ELECTRICITY,
     ]
 
 
@@ -273,6 +275,8 @@ def _validate_price_sensor(
         return None
     if integration_type == PRICE_INTEGRATION_ZONNEPLAN:
         return None if parse_zonneplan_prices(attrs) else "no_price_data"
+    if integration_type == PRICE_INTEGRATION_BE_ELECTRICITY:
+        return None if parse_be_electricity_prices(attrs) else "no_price_data"
     # Nordpool
     if "raw_today" in attrs:
         return None

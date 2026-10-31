@@ -1395,7 +1395,8 @@
         "epex": "EPEX Spot (p. ex. aWATTar)",
         "entsoe": "ENTSO-e (Plataforma de Transparència)",
         "zonneplan": "Zonneplan",
-        "tibber": "Tibber (basat en servei)"
+        "tibber": "Tibber (basat en servei)",
+        "be_electricity_prices": "BE Electricity Prices (Bèlgica, tot inclòs)"
       }
     }
   },

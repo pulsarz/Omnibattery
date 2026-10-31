@@ -1030,6 +1030,9 @@ PRICE_INTEGRATION_EPEX = "epex"
 PRICE_INTEGRATION_ENTSOE = "entsoe"
 PRICE_INTEGRATION_TIBBER = "tibber"
 PRICE_INTEGRATION_ZONNEPLAN = "zonneplan"
+# renaudallard/homeassistant_be_electricity_prices: all-in Belgian prices for
+# every supplier contract (fixed, variable, time-of-use, dynamic).
+PRICE_INTEGRATION_BE_ELECTRICITY = "be_electricity_prices"
 
 # Tibber and the official Nord Pool integration are service-based rather than
 # forecast-attribute based. How stale either cache may get before a refresh.

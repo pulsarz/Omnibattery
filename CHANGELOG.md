@@ -1,5 +1,11 @@
 # Changelog
 
+## [Unreleased]
+
+### Added
+
+- **BE Electricity Prices as a Dynamic Pricing source** (Belgium): its current-price sensor's all-in slot list for today and tomorrow is read directly, for every contract kind including time-of-use ones such as ENGIE Empower Flextime, so Discharge Reserve and the rest of Dynamic Pricing need no template sensor.
+
 ## [1.5.0] - 2026-10-04
 
 ### Added

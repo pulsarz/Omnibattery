@@ -10,7 +10,7 @@ Precio dinámico lee un calendario de precios futuros y compra el déficit energ
 
 ## Antes de empezar
 
-- Configura una fuente compatible: **Nordpool**, **PVPC**, **CKW**, **EPEX Spot**, **ENTSO-e**, **Zonneplan** o **Tibber**.
+- Configura una fuente compatible: **Nordpool**, **PVPC**, **CKW**, **EPEX Spot**, **ENTSO-e**, **Zonneplan**, **Tibber** o **BE Electricity Prices** (Bélgica).
 - Selecciona la entidad de precio actual del proveedor salvo que uses Tibber. Tibber usa el servicio `tibber.get_prices` de la integración oficial y no necesita sensor de precio.
 - La previsión solar es opcional. Una previsión de energía restante mejora la replanificación diurna y evita contar la solar ya producida. **Venta a precio alto** en *Solo excedente* o superior necesita que la integración de previsión configurada proporcione previsiones al panel de Energía de Home Assistant, como Solcast o Forecast.Solar.
 - Decide si necesitas una fuente de precio de exportación. Es opcional y la usan **Retención de excedente por precio** y **Venta a precio alto**; déjala vacía cuando la exportación se remunere al precio de importación.
@@ -26,6 +26,7 @@ Precio dinámico lee un calendario de precios futuros y compra el déficit energ
 ![Configura una fuente de precios futuros](../../assets/screenshots/configuration/predictive-charging/dynamic-pricing-form.png){ width="650" style="display: block; margin: 0 auto;" }
 
 !!! note "Elección de sensor específica del proveedor"
+    Para **BE Electricity Prices** (Bélgica), elige su sensor **Current price**. Lista cada franja de hoy y mañana al precio todo incluido para cualquier contrato, también los de franjas horarias como ENGIE Empower Flextime, así que Dynamic Pricing y **Discharge Reserve** funcionan sin plantilla. Para la curva de exportación, elige su sensor **Injection price** con el mismo tipo.
     Para Zonneplan, elige **Current quarter hourly electricity tariff** para un contrato de cuarto de hora o **Current hourly electricity tariff** para un contrato horario. También se admite el antiguo **Current electricity tariff**. Para Nord Pool, elige una entidad de la integración oficial o el sensor de HACS; Omnibattery detecta el formato.
 
 ## Qué verás
@@ -66,7 +67,7 @@ Los controles opcionales de la pestaña **Control** resuelven problemas distinto
 ??? "Detalles avanzados"
     ### Normalización de fuentes de precio
 
-    Omnibattery admite **Nordpool**, **PVPC**, **CKW**, **EPEX Spot**, **ENTSO-e**, **Zonneplan** y **Tibber**. Los analizadores de proveedores normalizan los periodos de precios fechados al mismo horario local.
+    Omnibattery admite **Nordpool**, **PVPC**, **CKW**, **EPEX Spot**, **ENTSO-e**, **Zonneplan**, **Tibber** y **BE Electricity Prices**. Los analizadores de proveedores normalizan los periodos de precios fechados al mismo horario local.
 
     Zonneplan lee el atributo `forecast` del sensor elegido, incluido mañana cuando está disponible. Los importes de previsión se dividen por 10.000.000 para obtener moneda principal/kWh con impuestos incluidos; el estado actual del sensor ya está en moneda principal/kWh. Se conservan los precios negativos y cero. Las entradas modernas conservan límites de periodo explícitos; las entradas heredadas usan periodos de una hora.
 

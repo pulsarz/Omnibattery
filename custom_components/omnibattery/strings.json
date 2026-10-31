@@ -1390,7 +1390,8 @@
         "epex": "EPEX Spot (e.g. aWATTar)",
         "entsoe": "ENTSO-e (Transparency Platform)",
         "zonneplan": "Zonneplan",
-        "tibber": "Tibber (service-based)"
+        "tibber": "Tibber (service-based)",
+        "be_electricity_prices": "BE Electricity Prices (Belgium, all-in)"
       }
     }
   },
