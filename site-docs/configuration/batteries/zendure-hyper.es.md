@@ -58,6 +58,8 @@ Los mismos controles y lecturas que en otras baterías Zendure: control automát
 
     **Métodos de control.** *Automatización* envía la función `deviceAutomation` (`autoModel` 8) en `.../function/invoke`, la misma orden que usa el modo inteligente de la app; vive en RAM y se refresca cada minuto. *Propiedades* escribe `acMode` con `inputLimit` / `outputLimit` y `smartMode=1`, como el driver HTTP. Los cambios de configuración (límites de SOC, salida del inversor) se escriben como propiedades en ambos modos.
 
+    **Potencia mínima y arranque.** El Hyper puede ignorar órdenes muy pequeñas, que Omnibattery leería como una batería que no entrega. Por eso el driver nunca envía menos de 50 W: una petición menor se redondea a 50 W y el control de red corrige la diferencia en segundos. Si un arranque pequeño (menos de 100 W) sigue sin producir potencia a los 10 segundos, se reenvía una vez a 100 W hasta que el Hyper arranca (como mucho 15 segundos) y después se restaura la petición. La integración oficial de Zendure usa la misma potencia de arranque de 50 W y el mismo empujón. **PD Min Charge Power** puede quedarse en 0.
+
     **Potencias a cero.** El Hyper omite las potencias que valen cero. Una potencia que no aparece durante unos 75 segundos se lee como 0, y las direcciones de carga y descarga son excluyentes, así que un informe que nombra una pone la otra a cero.
 
     **Unidades.** `socSet` y `minSoc` van en milésimas, las temperaturas en decikelvin y las tensiones de celda en centivoltios; todo se convierte.

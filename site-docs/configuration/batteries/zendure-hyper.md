@@ -58,6 +58,8 @@ The same controls and readings as other Zendure batteries: automatic control, so
 
     **Control methods.** *Automation* sends the `deviceAutomation` function (`autoModel` 8) on `.../function/invoke`, the same command the Zendure app's smart mode uses; it lives in RAM and is refreshed every minute. *Properties* writes `acMode` with `inputLimit` / `outputLimit` and `smartMode=1`, like the HTTP driver. Configuration changes (SOC limits, inverter output) are written as properties in both modes.
 
+    **Minimum power and kickstart.** The Hyper can ignore very small commands, which Omnibattery would read as a battery refusing to deliver. The driver therefore never sends less than 50 W: a smaller request is rounded up to 50 W and the grid controller corrects the difference within seconds. If a small start (under 100 W) still produces no power after 10 seconds, it is re-sent once at 100 W until the Hyper runs (at most 15 seconds), then the request is restored. Zendure's own integration uses the same 50 W start power and kickstart. **PD Min Charge Power** can stay at 0.
+
     **Zero powers.** The Hyper leaves zero-valued powers out of its reports. A power that has not appeared for about 75 seconds is read as 0, and charging/discharging directions are mutually exclusive, so a report naming one clears the other.
 
     **Units.** `socSet` and `minSoc` are per-mille, temperatures are deci-Kelvin, cell voltages are centivolts; all are converted.

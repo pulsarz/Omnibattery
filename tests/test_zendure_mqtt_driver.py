@@ -659,3 +659,114 @@ async def test_default_paho_client_is_built_off_the_event_loop(monkeypatch):
     assert await transport.start()
     assert built_in == [False]
     await transport.stop()
+
+
+# ----------------------------------------------------------------------
+# Minimum power and kickstart
+# ----------------------------------------------------------------------
+
+
+def _out_power(broker):
+    value = broker.last("/function/invoke")["arguments"][0]["autoModelValue"]
+    return value["chargingPower"] or -value["outPower"]
+
+
+@pytest.mark.asyncio
+async def test_small_requests_are_rounded_up_to_the_floor():
+    driver, broker, _ = await _driver()
+    assert await driver.connect()
+    assert driver.capabilities.min_charge_power_w == 50
+    assert driver.capabilities.min_discharge_power_w == 50
+
+    result = await driver.apply_setpoint(30)
+    assert _out_power(broker) == 50 and result.net_power_w == 50
+    # The controller's own request stays the cache key, so its skip guard works.
+    assert result.applied == {"commanded_net_power": 30}
+    assert driver.net_power_from_data(await driver.read_telemetry()) == 30
+
+    await driver.apply_setpoint(-20)
+    assert _out_power(broker) == -50
+    await driver.apply_setpoint(0)
+    assert _out_power(broker) == 0
+    await driver.apply_setpoint(400)
+    assert _out_power(broker) == 400
+    await driver.close()
+
+
+@pytest.mark.asyncio
+async def test_floor_also_applies_to_property_writes_and_keepalive():
+    clock = Clock()
+    driver, broker, _ = await _driver(control_method=CONTROL_PROPERTIES, clock=clock)
+    assert await driver.connect()
+    await driver.apply_setpoint(-10)
+    assert broker.last("/properties/write")["properties"]["outputLimit"] == 50
+    clock.now += 61
+    await driver._refresh_once()
+    assert broker.last("/properties/write")["properties"]["outputLimit"] == 50
+    await driver.close()
+
+
+async def _stuck_start(request_w, *, delivering=None):
+    """Start ``request_w`` on a device that reports no power unless told to."""
+    broker = FakeBroker(reply_with={"properties": {"electricLevel": 50}})
+    driver, broker, _ = await _driver(broker)
+    driver._kick_after_s = 0.02
+    driver._kick_hold_s = 0.3
+    assert await driver.connect()
+    await driver.apply_setpoint(request_w)
+    return driver, broker
+
+
+@pytest.mark.asyncio
+async def test_a_small_start_that_does_not_run_is_kicked_then_restored():
+    driver, broker = await _stuck_start(-60)
+    assert _out_power(broker) == -60
+    await asyncio.sleep(0.05)
+    assert _out_power(broker) == -100  # kickstart
+    broker.deliver(REPORT, {"properties": {"packInputPower": 100, "outputHomePower": 95}})
+    await asyncio.sleep(0.05)
+    for _ in range(40):
+        if _out_power(broker) == -60:
+            break
+        await asyncio.sleep(0.05)
+    assert _out_power(broker) == -60  # back to the request once running
+    assert driver.net_power_from_data(await driver.read_telemetry()) == -60
+    await driver.close()
+
+
+@pytest.mark.asyncio
+async def test_no_kick_when_the_device_starts_on_its_own_or_the_request_is_large():
+    driver, broker = await _stuck_start(70)
+    broker.deliver(REPORT, {"properties": {"outputPackPower": 70, "gridInputPower": 70}})
+    await asyncio.sleep(0.1)
+    assert _out_power(broker) == 70
+    await driver.close()
+
+    driver, broker = await _stuck_start(400)
+    sent = len(broker.published)
+    await asyncio.sleep(0.1)
+    assert len([t for t, _ in broker.published[sent:] if t.endswith("/function/invoke")]) == 0
+    await driver.close()
+
+
+@pytest.mark.asyncio
+async def test_a_kick_is_dropped_on_direction_change_stop_and_close():
+    driver, broker = await _stuck_start(60)
+    await driver.apply_setpoint(-300)
+    await asyncio.sleep(0.1)
+    assert _out_power(broker) == -300  # the charge kick never fired
+    await driver.close()
+
+    driver, broker = await _stuck_start(60)
+    await asyncio.sleep(0.05)
+    assert _out_power(broker) == 100
+    assert await driver.standby()
+    await asyncio.sleep(0.1)
+    assert _out_power(broker) == 0  # no restore after the stop
+    await driver.close()
+
+    driver, broker = await _stuck_start(60)
+    await driver.close()
+    sent = len(broker.published)
+    await asyncio.sleep(0.1)
+    assert len(broker.published) == sent
