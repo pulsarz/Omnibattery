@@ -39,7 +39,7 @@ If discovery misses a Hyper, read its ID from the broker. In Home Assistant open
 
 ## What you will see
 
-The same controls and readings as other Zendure batteries: automatic control, software **Force Mode** / **Set Charge Power** / **Set Discharge Power** under **Battery Manual Control**, **Target SOC**, **Minimum SOC** and **Max Inverter Output**, SOC, battery power, solar power (total and per MPPT input), temperature, and per-pack SOC, voltages and temperature. Charged and discharged energy is integrated from power, because the Hyper reports no energy counters.
+The same controls and readings as other Zendure batteries: automatic control, software **Force Mode** / **Set Charge Power** / **Set Discharge Power** under **Battery Manual Control**, **Target SOC**, **Minimum SOC** and **Max Inverter Output**, SOC, battery power, solar power (total and per MPPT input), temperature, and per-pack SOC, voltages and temperature. Charged and discharged energy is integrated from power, because the Hyper reports no energy counters. **Lifetime Efficiency** is the ratio of those discharged and charged totals.
 
 ## If it does not work
 

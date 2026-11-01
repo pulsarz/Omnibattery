@@ -39,7 +39,7 @@ Si la detección no encuentra un Hyper, lee su ID en el broker. En Home Assistan
 
 ## Qué verás
 
-Los mismos controles y lecturas que en otras baterías Zendure: control automático, **Force Mode** / **Set Charge Power** / **Set Discharge Power** por software bajo **Battery Manual Control**, **Target SOC**, **Minimum SOC** y **Max Inverter Output**, SOC, potencia de batería, potencia solar (total y por entrada MPPT), temperatura y SOC, tensiones y temperatura por pack. La energía cargada y descargada se integra a partir de la potencia, porque el Hyper no informa contadores de energía.
+Los mismos controles y lecturas que en otras baterías Zendure: control automático, **Force Mode** / **Set Charge Power** / **Set Discharge Power** por software bajo **Battery Manual Control**, **Target SOC**, **Minimum SOC** y **Max Inverter Output**, SOC, potencia de batería, potencia solar (total y por entrada MPPT), temperatura y SOC, tensiones y temperatura por pack. La energía cargada y descargada se integra a partir de la potencia, porque el Hyper no informa contadores de energía. La **Lifetime Efficiency** es la relación entre esos totales de descarga y de carga.
 
 ## Si no funciona
 

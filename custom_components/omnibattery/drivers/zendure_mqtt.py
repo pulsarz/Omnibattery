@@ -640,6 +640,9 @@ class ZendureMqttDriver(BatteryDriver):
             has_nominal_capacity=True,
             has_daily_energy_counters=False,
             setpoint_confirm_reliable=False,
+            # Pack and AC power are not independent measurements, so the
+            # dual-plane efficiency reads ~100%; keep it on the energy totals.
+            independent_power_planes=False,
             actuator_latency_s=3.0,
             readback_latency_s=6.0,
             min_charge_power_w=_MIN_POWER_W,
