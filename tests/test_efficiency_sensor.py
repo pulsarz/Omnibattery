@@ -106,3 +106,28 @@ def test_dual_plane_sampling_falls_back_to_the_measured_ac_port():
     assert sensor._discharge_dc_kwh == pytest.approx(0.05, abs=1e-3)
     assert sensor._discharge_ac_kwh == pytest.approx(0.045, abs=1e-3)
     assert sensor.native_value == pytest.approx(81.0, abs=0.5)
+
+
+@pytest.mark.asyncio
+async def test_zendure_hyper_keeps_lifetime_counter_efficiency():
+    """The Hyper reports PV, but its pack and AC powers are not independent, so
+    integrating the two planes reads ~100%; efficiency must stay on the
+    cumulative charge/discharge totals."""
+    from custom_components.omnibattery.drivers.zendure_mqtt import ZendureMqttDriver
+
+    capabilities = ZendureMqttDriver(
+        SimpleNamespace(), "dev1", product_key="ja72U0ha", transport=object(),
+    ).capabilities
+    assert capabilities.has_solar_telemetry
+    coordinator = SimpleNamespace(
+        name="Hyper", device_key="zendure_1", capabilities=capabilities,
+    )
+    sensor = MarstekVenusEfficiencySensor(coordinator, {
+        "key": "round_trip_efficiency_total",
+        "dependency_keys": {
+            "charge": "total_charging_energy",
+            "discharge": "total_discharging_energy",
+        },
+    })
+
+    assert sensor._integrate_mode is False

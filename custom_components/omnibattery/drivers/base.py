@@ -120,6 +120,13 @@ class DriverCapabilities:
     # than warning — the retry still confirms it. Defaults True.
     setpoint_confirm_reliable: bool = True
 
+    # True if the AC port and the cell terminal are measured independently, so
+    # their power difference is the real conversion loss. The efficiency sensor
+    # integrates the two planes on PV units only when this holds. Zendure reports
+    # AC and cell power that are not independent measurements, which reads as
+    # ~100%, so it keeps the cumulative charge/discharge counters. Defaults True.
+    independent_power_planes: bool = True
+
     # Approximate physical response time (seconds) after issuing a setpoint. The
     # zero-cross guard uses it to avoid commanding the opposite direction while
     # the previous command is still taking effect. Readback freshness is declared

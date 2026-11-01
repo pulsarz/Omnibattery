@@ -89,8 +89,11 @@ class MarstekVenusEfficiencySensor(CoordinatorEntity, RestoreEntity, SensorEntit
         # use integration.
         capabilities = getattr(coordinator, "capabilities", None)
         self._integrate_mode = bool(
-            getattr(capabilities, "has_mppt_pv", False)
-            or getattr(capabilities, "has_solar_telemetry", False)
+            (
+                getattr(capabilities, "has_mppt_pv", False)
+                or getattr(capabilities, "has_solar_telemetry", False)
+            )
+            and getattr(capabilities, "independent_power_planes", True)
         )
         self._mppt_keys = ["mppt1_power", "mppt2_power", "mppt3_power", "mppt4_power"]
         # Energy on each plane, split by direction (kWh), MPPT=0 windows only.
