@@ -14,6 +14,8 @@ are limited to driver selection, configuration, and migrations.
 Drivers:
   - ``marstek``: Modbus-TCP, register based, polled (the original hardware).
   - ``zendure``: local HTTP REST, property based, polled (SolarFlow series).
+  - ``zendure_mqtt``: MQTT push, property based (Hyper 2000), through HA's
+    broker or a broker of its own.
   - ``esphome``: HA-entity based, push (Marstek behind a LilyGo RS485 bridge).
   - ``anker``: Modbus-TCP, register based, polled (SOLIX Solarbank Max AC / 4 E5000 Pro).
   - ``hoymiles``: HA MQTT based, push telemetry (MS-A2).
@@ -36,6 +38,7 @@ from .base import (
 from .esphome import EsphomeEntityDriver
 from .marstek import MarstekModbusDriver
 from .zendure import ZendureLocalDriver
+from .zendure_mqtt import ZendureMqttDriver
 from .anker import AnkerModbusDriver
 from .sessy import SessyLocalDriver
 from .hoymiles import HoymilesMqttDriver
@@ -52,6 +55,7 @@ __all__ = [
     "EsphomeEntityDriver",
     "MarstekModbusDriver",
     "ZendureLocalDriver",
+    "ZendureMqttDriver",
     "AnkerModbusDriver",
     "SessyLocalDriver",
     "HoymilesMqttDriver",

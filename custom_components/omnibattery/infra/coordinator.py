@@ -23,6 +23,7 @@ from ..const import (
 from ..drivers.esphome import EsphomeEntityDriver
 from ..drivers.marstek import MarstekModbusDriver
 from ..drivers.zendure import ZendureLocalDriver, ZENDURE_MODEL_2400AC_PRO
+from ..drivers.zendure_mqtt import ZendureMqttDriver, build_transport as build_zendure_mqtt_transport
 from ..drivers.anker import AnkerModbusDriver
 from ..drivers.sessy import SessyLocalDriver
 from ..drivers.indevolt import IndevoltDriver
@@ -331,6 +332,12 @@ class MarstekVenusDataUpdateCoordinator(DataUpdateCoordinator):
                  brand: str = "marstek",
                  zendure_model: str = ZENDURE_MODEL_2400AC_PRO,
                  hoymiles_model: str | None = None,
+                 zendure_transport: str = "http",
+                 zendure_product_key: str | None = None,
+                 zendure_mqtt_broker: str = "homeassistant",
+                 mqtt_host: str | None = None,
+                 mqtt_port: int | None = None,
+                 zendure_control_method: str = "automation",
                  serial_port: str | None = None,
                  rs485_gateway: bool = False,
                  indevolt_request_speed: str | None = None,
@@ -509,7 +516,27 @@ class MarstekVenusDataUpdateCoordinator(DataUpdateCoordinator):
         # packet correction; the coordinator and platform setups read the
         # per-platform definition lists back from it (see the passthrough
         # properties below) instead of branching on the version string.
-        if self.brand == "zendure":
+        self.zendure_transport = zendure_transport or "http"
+        if self.brand == "zendure" and self.zendure_transport == "mqtt":
+            # Hyper 2000: no local HTTP API, MQTT only. host holds the device id.
+            # Same rule as the HTTP branch below: the capability stays the
+            # hardware ceiling and the user's ceiling is enforced separately.
+            self.driver = ZendureMqttDriver(
+                hass,
+                self.host,
+                product_key=zendure_product_key,
+                transport=build_zendure_mqtt_transport(
+                    hass,
+                    zendure_mqtt_broker,
+                    host=mqtt_host,
+                    port=mqtt_port,
+                    username=username,
+                    password=password,
+                ),
+                model=zendure_model,
+                control_method=zendure_control_method,
+            )
+        elif self.brand == "zendure":
             # Zendure's charge/discharge caps are read-only device traits, not
             # writable registers. The capability must stay the hardware ceiling
             # (driver default) — feeding the user-tunable max_charge_power here
@@ -1668,9 +1695,12 @@ class MarstekVenusDataUpdateCoordinator(DataUpdateCoordinator):
         # energy, cycle, predictive charging and pricing math work uniformly.
         # ``getattr`` keeps third-party driver capabilities from before this
         # field compatible: they are assumed to report capacity.
-        if (
+        # A driver that derives capacity itself (Zendure over MQTT, from the
+        # pack serials) may not know it yet or meet an unrecognised pack; the
+        # stored value then stands in rather than leaving the math without it.
+        if self.battery_capacity_kwh and (
             not getattr(self.capabilities, "has_nominal_capacity", True)
-            and self.battery_capacity_kwh
+            or not self.data.get("battery_total_energy")
         ):
             self.data["battery_total_energy"] = self.battery_capacity_kwh
 

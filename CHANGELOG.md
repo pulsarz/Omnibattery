@@ -1,5 +1,11 @@
 # Changelog
 
+## [Unreleased]
+
+### Added
+
+- **Zendure Hyper 2000 over MQTT**: new **Zendure Hyper 2000 (MQTT)** battery type for the Hyper, which has no local HTTP API. Works with Home Assistant's MQTT broker or connects directly to your own (e.g. Mosquitto in Docker); every Hyper on the broker is discovered (pick from a list, already-added ones skipped), and nominal capacity is read from the pack serials (e.g. 3 × AB2000 = 5.76 kWh), so there is nothing to look up. Control uses the RAM-only `deviceAutomation` command by default, with a property-write fallback for firmware that ignores it. Commands are never smaller than 50 W, and a small start that does not run is kickstarted at 100 W, so the Hyper is not excluded for ignoring tiny setpoints. Lifetime Efficiency uses the charge/discharge totals.
+
 ## [1.6.0] - 2026-11-09
 
 ### Added

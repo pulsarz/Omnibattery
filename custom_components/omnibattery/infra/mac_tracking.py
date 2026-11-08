@@ -94,6 +94,9 @@ def is_ip_based(battery: dict) -> bool:
         return False
     if (battery.get("serial_port") or "").strip():
         return False
+    # A Zendure reached over MQTT stores its device id in ``host``.
+    if battery.get("zendure_transport") == "mqtt":
+        return False
     return bool((battery.get("host") or "").strip())
 
 
