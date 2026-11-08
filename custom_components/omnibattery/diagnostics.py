@@ -31,6 +31,9 @@ TO_REDACT = {
     "serial_port",
     "ip_address",
     "mac",
+    # Zendure over MQTT: the broker address and the device id (also in host).
+    "mqtt_host",
+    "device_id",
 }
 
 

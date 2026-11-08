@@ -135,3 +135,28 @@ def test_zendure_pv_keeps_lifetime_counter_efficiency(model):
     })
 
     assert sensor._integrate_mode is False
+
+
+@pytest.mark.asyncio
+async def test_zendure_hyper_keeps_lifetime_counter_efficiency():
+    """The Hyper reports PV, but its pack and AC powers are not independent, so
+    integrating the two planes reads ~100%; efficiency must stay on the
+    cumulative charge/discharge totals."""
+    from custom_components.omnibattery.drivers.zendure_mqtt import ZendureMqttDriver
+
+    capabilities = ZendureMqttDriver(
+        SimpleNamespace(), "dev1", product_key="ja72U0ha", transport=object(),
+    ).capabilities
+    assert capabilities.has_solar_telemetry
+    coordinator = SimpleNamespace(
+        name="Hyper", device_key="zendure_1", capabilities=capabilities,
+    )
+    sensor = MarstekVenusEfficiencySensor(coordinator, {
+        "key": "round_trip_efficiency_total",
+        "dependency_keys": {
+            "charge": "total_charging_energy",
+            "discharge": "total_discharging_energy",
+        },
+    })
+
+    assert sensor._integrate_mode is False
