@@ -1,0 +1,3932 @@
+
+<!doctype html>
+<html lang="es" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Home Assistant custom integration for monitoring and controlling multiple home-battery brands">
+      
+      
+        <meta name="author" content="ffunes">
+      
+      
+        <link rel="canonical" href="https://ffunes.github.io/omnibattery/es/features/multi-battery/">
+      
+      
+        <link rel="prev" href="../cell-balance-monitor/">
+      
+      
+        <link rel="next" href="../daily-operation-timeline/">
+      
+      
+        
+          <link rel="alternate" href="../../../features/multi-battery/" hreflang="en">
+        
+          <link rel="alternate" href="./" hreflang="es">
+        
+      
+      
+      <link rel="icon" href="../../../assets/logo.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.8.1">
+    
+    
+      
+        <title>Varias baterías - Omnibattery</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.57a0d79d.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../assets/stylesheets/palette.fb2fffe2.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="teal" data-md-color-accent="green">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#varias-baterias" class="md-skip">
+          Saltar a contenido
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+      <div data-md-color-scheme="default" data-md-component="outdated" hidden>
+        
+      </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow md-header--lifted" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Cabecera">
+    <a href="../../" title="Omnibattery" class="md-header__button md-logo" aria-label="Omnibattery" data-md-component="logo">
+      
+  <img src="../../../assets/logo.png" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Omnibattery
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Varias baterías
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="teal" data-md-color-accent="green"  aria-label="Cambiar a modo oscuro / Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Cambiar a modo oscuro / Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="teal" data-md-color-accent="green"  aria-label="Cambiar a modo claro / Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Cambiar a modo claro / Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+      <div class="md-header__option">
+  <div class="md-select">
+    
+    <button class="md-header__button md-icon" aria-label="Seleccionar idioma">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m12.87 15.07-2.54-2.51.03-.03A17.5 17.5 0 0 0 14.07 6H17V4h-7V2H8v2H1v2h11.17C11.5 7.92 10.44 9.75 9 11.35 8.07 10.32 7.3 9.19 6.69 8h-2c.73 1.63 1.73 3.17 2.98 4.56l-5.09 5.02L4 19l5-5 3.11 3.11zM18.5 10h-2L12 22h2l1.12-3h4.75L21 22h2zm-2.62 7 1.62-4.33L19.12 17z"/></svg>
+    </button>
+    <div class="md-select__inner">
+      <ul class="md-select__list">
+        
+          <li class="md-select__item">
+            <a href="../../../features/multi-battery/" hreflang="en" class="md-select__link">
+              English
+            </a>
+          </li>
+        
+          <li class="md-select__item">
+            <a href="./" hreflang="es" class="md-select__link">
+              Español
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</div>
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Búsqueda" placeholder="Búsqueda" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Buscar">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Limpiar" aria-label="Limpiar" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Inicializando búsqueda
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/ffunes/omnibattery" title="Ir al repositorio" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    ffunes/omnibattery
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+    
+      
+<nav class="md-tabs" aria-label="Pestañas" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Inicio
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../compatibility/" class="md-tabs__link">
+          
+  
+  
+  Empezar
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../configuration/" class="md-tabs__link">
+          
+  
+  
+  Configurar
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../pd-controller/" class="md-tabs__link">
+          
+  
+  
+  Funcionalidades
+
+        </a>
+      </li>
+    
+  
+
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../hardware/shelly-pro-3em-mqtt-script/" class="md-tabs__link">
+          
+  
+  
+  Hardware y medidores
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../automations/blueprints/" class="md-tabs__link">
+          
+  
+  
+  Automatizaciones
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../troubleshooting/" class="md-tabs__link">
+          
+  
+  
+  Soporte
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../reference/entities/" class="md-tabs__link">
+          
+  
+  
+  Referencia
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../reference/architecture/" class="md-tabs__link">
+          
+  
+  
+  Contribuir
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+    
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navegación" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../" title="Omnibattery" class="md-nav__button md-logo" aria-label="Omnibattery" data-md-component="logo">
+      
+  <img src="../../../assets/logo.png" alt="logo">
+
+    </a>
+    Omnibattery
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/ffunes/omnibattery" title="Ir al repositorio" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    ffunes/omnibattery
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Inicio
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Empezar
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Empezar
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../compatibility/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ¿Es compatible mi batería?
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../installation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Guía de instalación
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../upgrading-from-marstek-vem/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Actualizar desde Marstek VEM
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Configurar
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Configurar
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../configuration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Empieza aquí
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_2" id="__nav_3_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Sensores y límites eléctricos
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Sensores y límites eléctricos
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../configuration/main-sensor/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Sensor principal
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../configuration/three-phase/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Protección de corriente trifásica
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_3" id="__nav_3_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tu batería
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Tu batería
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../configuration/batteries/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Elegir marca
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../configuration/batteries/marstek/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Marstek
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../configuration/batteries/esphome-lilygo/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ESPHome / LilyGo
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../configuration/batteries/zendure/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Zendure
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../configuration/batteries/anker/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Anker SOLIX
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../configuration/batteries/sessy/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Sessy
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../configuration/batteries/indevolt/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Indevolt
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../configuration/batteries/hoymiles/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Hoymiles MQTT
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../configuration/batteries/huawei/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Huawei
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../configuration/hoymiles-ms-a2/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Instalación de Hoymiles MS-A2
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../configuration/time-slots/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Franjas horarias
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_5" id="__nav_3_5_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Cargas grandes y cargadores VE
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Cargas grandes y cargadores VE
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../configuration/excluded-devices/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Dispositivos excluidos
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../load-exclusion/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Exclusión de cargas
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_6" id="__nav_3_6_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Carga predictiva
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Carga predictiva
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../configuration/predictive-charging/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ¿Qué modo elijo?
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../configuration/predictive-charging/time-slot/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Modo Franja Horaria
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../configuration/predictive-charging/dynamic-pricing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Modo Precio Dinámico
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../configuration/predictive-charging/real-time-price/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Modo Precio en Tiempo Real
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Funcionalidades
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Funcionalidades
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+          
+          
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_4_1" >
+        
+          
+          <label class="md-nav__link" for="__nav_4_1" id="__nav_4_1_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Seguir el consumo de casa
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_1_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_1">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Seguir el consumo de casa
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../pd-controller/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Controlador PD
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../hourly-net-balance/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Balance neto horario
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+          
+          
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_4_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_4_2" id="__nav_4_2_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Aprovechar el sol
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Aprovechar el sol
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../consumption-estimate/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Estimación de consumo diario
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../solar-charge-delay/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Retraso de carga solar
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+          
+          
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_4_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_4_3" id="__nav_4_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Proteger la instalación
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Proteger la instalación
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../peak-shaving/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Peak shaving
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../temperature-charge-limit/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Límite de carga por temperatura
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+          
+          
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_4_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4_4" id="__nav_4_4_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Cuidar la batería
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Cuidar la batería
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../weekly-full-charge/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Carga semanal completa
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../cell-balance-monitor/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Monitor de equilibrio de celdas
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Varias baterías
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Varias baterías
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Tabla de contenidos">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Tabla de contenidos
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#lo-necesito" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ¿Lo necesito?
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#antes-de-empezar" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Antes de empezar
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#como-activarlo" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Cómo activarlo
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#que-veras" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Qué verás
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#si-no-funciona" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Si no funciona
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#principio-de-eficiencia" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Principio de eficiencia
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#prioridades-de-seleccion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Prioridades de selección
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Prioridades de selección">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#descarga" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Descarga
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#carga" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Carga
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#histeresis" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Histéresis
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#reparto-de-potencia" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Reparto de potencia
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#controles-de-cargadescarga-por-bateria" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Controles de carga/descarga por batería
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#control-manual-por-bateria" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Control manual por batería
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#registro-unificado-de-bloqueadores" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Registro unificado de bloqueadores
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#exclusion-de-bateria-sin-respuesta" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Exclusión de batería sin respuesta
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../daily-operation-timeline/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Cronología diaria
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Hardware y medidores
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Hardware y medidores
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../hardware/shelly-pro-3em-mqtt-script/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Scripts MQTT para Shelly Pro 3EM
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Automatizaciones
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Automatizaciones
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../automations/blueprints/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Blueprints
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_7" >
+        
+          
+          <label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Soporte
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_7">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Soporte
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../troubleshooting/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Solución de problemas
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../changelog/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Changelog
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_8" >
+        
+          
+          <label class="md-nav__link" for="__nav_8" id="__nav_8_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Referencia
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_8_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_8">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Referencia
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/entities/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Entidades HA
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_8_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_8_2" id="__nav_8_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Registros Modbus
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_8_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_8_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Registros Modbus
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/modbus-registers/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Resumen
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/registers/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tabla completa de registros
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_9" >
+        
+          
+          <label class="md-nav__link" for="__nav_9" id="__nav_9_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Contribuir
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_9_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_9">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Contribuir
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/architecture/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Arquitectura
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/driver-requirements-template/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Requisitos para drivers de batería
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Tabla de contenidos">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Tabla de contenidos
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#lo-necesito" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ¿Lo necesito?
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#antes-de-empezar" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Antes de empezar
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#como-activarlo" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Cómo activarlo
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#que-veras" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Qué verás
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#si-no-funciona" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Si no funciona
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#principio-de-eficiencia" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Principio de eficiencia
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#prioridades-de-seleccion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Prioridades de selección
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Prioridades de selección">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#descarga" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Descarga
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#carga" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Carga
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#histeresis" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Histéresis
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#reparto-de-potencia" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Reparto de potencia
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#controles-de-cargadescarga-por-bateria" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Controles de carga/descarga por batería
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#control-manual-por-bateria" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Control manual por batería
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#registro-unificado-de-bloqueadores" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Registro unificado de bloqueadores
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#exclusion-de-bateria-sin-respuesta" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Exclusión de batería sin respuesta
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+    <a href="https://github.com/ffunes/omnibattery/edit/main/site-docs/features/multi-battery.es.md" title="Editar esta página" class="md-content__button md-icon" rel="edit">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M10 20H6V4h7v5h5v3.1l2-2V8l-6-6H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h4zm10.2-7c.1 0 .3.1.4.2l1.3 1.3c.2.2.2.6 0 .8l-1 1-2.1-2.1 1-1c.1-.1.2-.2.4-.2m0 3.9L14.1 23H12v-2.1l6.1-6.1z"/></svg>
+    </a>
+  
+  
+
+
+<h1 id="varias-baterias">Varias baterías<a class="headerlink" href="#varias-baterias" title="Permanent link">&para;</a></h1>
+<p>Omnibattery coordina todas las baterías configuradas como un sistema, respetando a la vez los límites y controles de cada batería. Elige qué baterías deben participar y reparte la potencia solicitada entre las que son elegibles.</p>
+<h2 id="lo-necesito">¿Lo necesito?<a class="headerlink" href="#lo-necesito" title="Permanent link">&para;</a></h2>
+<p><strong>Úsalo si</strong> tienes más de una batería compatible y quieres un objetivo de red único, límites de potencia coordinados y un control claro sobre qué batería puede cargar o descargar.</p>
+<p><strong>No lo necesitas si</strong> tu instalación tiene una batería. Las entidades agregadas del sistema siguen reflejando esa batería.</p>
+<h2 id="antes-de-empezar">Antes de empezar<a class="headerlink" href="#antes-de-empezar" title="Permanent link">&para;</a></h2>
+<ul>
+<li>Añade todas las baterías a la misma entrada de configuración de Omnibattery. Una entrada admite hasta <strong>10 baterías</strong>.</li>
+<li>Confirma que cada batería se actualiza de forma fiable e informa de estado de carga (SOC) y potencia.</li>
+<li>Decide si alguna batería necesita control manual o debe excluirse de una dirección.</li>
+</ul>
+<h2 id="como-activarlo">Cómo activarlo<a class="headerlink" href="#como-activarlo" title="Permanent link">&para;</a></h2>
+<ol>
+<li>Abre <strong>Ajustes → Dispositivos y servicios → Omnibattery → Configurar</strong>.</li>
+<li>Añade o revisa cada batería en la sección de configuración de baterías.</li>
+<li>Termina el formulario y deja que la integración se recargue.</li>
+<li>Abre el panel de Omnibattery y revisa <strong>Allow Charge</strong>, <strong>Allow Discharge</strong>, <strong>Manual Battery Control</strong>, <strong>Primary Battery</strong> y <strong>Charge Priority</strong>.</li>
+</ol>
+<p>Este comportamiento es automático cuando la entrada de configuración contiene varias baterías; no hay un interruptor independiente para varias baterías.</p>
+<p><img alt="Estado de varias baterías en Home Assistant" src="../../../assets/screenshots/features/multi-battery-entities.png" style="display: block; margin: 0 auto;" width="700" /></p>
+<h2 id="que-veras">Qué verás<a class="headerlink" href="#que-veras" title="Permanent link">&para;</a></h2>
+<p><strong>Active Batteries</strong> identifica las baterías que están cargando, descargando, en reposo o bajo control manual. <strong>Non-Responsive Batteries</strong> identifica exclusiones temporales. <strong>Integration Status</strong> expone bloqueadores globales y por batería.</p>
+<p>Cada batería tiene <strong>Allow Charge</strong>, <strong>Allow Discharge</strong> y <strong>Manual Battery Control</strong>. Las instalaciones con varias baterías también muestran <strong>Primary Battery</strong> y <strong>Charge Priority</strong>. Los opcionales <strong>System Max Charge Power</strong> y <strong>System Max Discharge Power</strong> limitan la solicitud combinada cuando se configuran límites de potencia del sistema.</p>
+<p>La selección automática normalmente prefiere mayor SOC para descargar y menor SOC para cargar. Una batería puede permanecer en reposo mientras trabaja otra; es esperado cuando una unidad puede atender la solicitud con más eficiencia.</p>
+<h2 id="si-no-funciona">Si no funciona<a class="headerlink" href="#si-no-funciona" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Síntoma</th>
+<th>Causa probable</th>
+<th>Qué comprobar</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Una batería nunca participa</td>
+<td>Dirección desactivada, control manual, prioridad de SOC o un límite</td>
+<td><strong>Active Batteries</strong>, interruptores Allow, modo manual y bloqueadores por batería</td>
+</tr>
+<tr>
+<td>Una batería desaparece temporalmente</td>
+<td>Fallo de comunicación o de potencia entregada</td>
+<td><strong>Non-Responsive Batteries</strong> y <strong>Reparaciones</strong> de Home Assistant</td>
+</tr>
+<tr>
+<td>La potencia combinada es menor de la esperada</td>
+<td>Tope de sistema o límite por batería</td>
+<td>Entidades de límite de potencia de sistema y batería</td>
+</tr>
+<tr>
+<td>Las baterías intercambian roles repetidamente</td>
+<td>Ruido del medidor o histéresis de selección cerca de un límite</td>
+<td><strong>PD Control Quality</strong>, valores de SOC y perfil del controlador</td>
+</tr>
+<tr>
+<td>El control manual de una batería lucha contra el automático</td>
+<td>No se activó el control manual</td>
+<td>Activa <strong>Manual Battery Control</strong> antes de escribir consignas sin procesar</td>
+</tr>
+</tbody>
+</table>
+<p>Consulta <a href="../../troubleshooting/">solución de problemas</a> para comprobaciones por síntoma.</p>
+<details>
+<summary>Detalles avanzados</summary>
+<h2 id="principio-de-eficiencia">Principio de eficiencia<a class="headerlink" href="#principio-de-eficiencia" title="Permanent link">&para;</a></h2>
+<p>Basándose en curvas de eficiencia Venus medidas, las baterías se activan solo cuando la potencia total supera el <strong>punto de cruce de eficiencia</strong>: la potencia a la que repartir la carga entre dos baterías es más eficiente que usar solo una. Usar menos baterías a mayor potencia es más eficiente que repartir la misma carga entre todas.</p>
+<p>Los puntos de cruce (derivados de mediciones externas de η) son:</p>
+<table>
+<thead>
+<tr>
+<th>Dirección</th>
+<th style="text-align: right;">Cruce</th>
+<th style="text-align: right;">% del máximo físico de 2500 W</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Descarga</td>
+<td style="text-align: right;">1500 W</td>
+<td style="text-align: right;">60 %</td>
+</tr>
+<tr>
+<td>Carga</td>
+<td style="text-align: right;">1750 W</td>
+<td style="text-align: right;">70 %</td>
+</tr>
+</tbody>
+</table>
+<p>El umbral de activación se calcula dinámicamente como <code>crossover_W ÷ configured_max_W</code>, limitado a [50 %, 95 %]. Esto significa que quien configura un límite de potencia menor por batería activa baterías adicionales más tarde (más cerca de su máximo configurado), lo que refleja correctamente que el rango de operación se mantiene dentro del pico de eficiencia de una sola batería.</p>
+<p>Las siguientes mediciones muestran consumo/salida de potencia CC, potencia CA en el contador (pinza interna) y en el enchufe de pared (pinza externa), y la eficiencia resultante en cada nivel de potencia:</p>
+<p><strong>Carga</strong></p>
+<table>
+<thead>
+<tr>
+<th style="text-align: right;">% del máximo</th>
+<th style="text-align: right;">Consigna (W)</th>
+<th style="text-align: right;">CC interna (W)</th>
+<th style="text-align: right;">CA interna (W)</th>
+<th style="text-align: right;">CA externa (W)</th>
+<th style="text-align: right;">η interna</th>
+<th style="text-align: right;">η externa</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: right;">3 %</td>
+<td style="text-align: right;">63</td>
+<td style="text-align: right;">41</td>
+<td style="text-align: right;">58</td>
+<td style="text-align: right;">68</td>
+<td style="text-align: right;">70.7 %</td>
+<td style="text-align: right;">60.3 %</td>
+</tr>
+<tr>
+<td style="text-align: right;">5 %</td>
+<td style="text-align: right;">125</td>
+<td style="text-align: right;">105</td>
+<td style="text-align: right;">123</td>
+<td style="text-align: right;">136</td>
+<td style="text-align: right;">85.4 %</td>
+<td style="text-align: right;">77.2 %</td>
+</tr>
+<tr>
+<td style="text-align: right;">10 %</td>
+<td style="text-align: right;">250</td>
+<td style="text-align: right;">232</td>
+<td style="text-align: right;">247</td>
+<td style="text-align: right;">262</td>
+<td style="text-align: right;">93.9 %</td>
+<td style="text-align: right;">88.5 %</td>
+</tr>
+<tr>
+<td style="text-align: right;">15 %</td>
+<td style="text-align: right;">375</td>
+<td style="text-align: right;">357</td>
+<td style="text-align: right;">372</td>
+<td style="text-align: right;">387</td>
+<td style="text-align: right;">96.0 %</td>
+<td style="text-align: right;">92.2 %</td>
+</tr>
+<tr>
+<td style="text-align: right;">20 %</td>
+<td style="text-align: right;">500</td>
+<td style="text-align: right;">481</td>
+<td style="text-align: right;">497</td>
+<td style="text-align: right;">513</td>
+<td style="text-align: right;">96.8 %</td>
+<td style="text-align: right;">93.8 %</td>
+</tr>
+<tr>
+<td style="text-align: right;">25 %</td>
+<td style="text-align: right;">625</td>
+<td style="text-align: right;">604</td>
+<td style="text-align: right;">621</td>
+<td style="text-align: right;">639</td>
+<td style="text-align: right;">97.3 %</td>
+<td style="text-align: right;">94.5 %</td>
+</tr>
+<tr>
+<td style="text-align: right;">30 %</td>
+<td style="text-align: right;">750</td>
+<td style="text-align: right;">727</td>
+<td style="text-align: right;">743</td>
+<td style="text-align: right;">766</td>
+<td style="text-align: right;">97.8 %</td>
+<td style="text-align: right;">94.9 %</td>
+</tr>
+<tr>
+<td style="text-align: right;">35 %</td>
+<td style="text-align: right;">875</td>
+<td style="text-align: right;">850</td>
+<td style="text-align: right;">871</td>
+<td style="text-align: right;">892</td>
+<td style="text-align: right;">97.6 %</td>
+<td style="text-align: right;">95.3 %</td>
+</tr>
+<tr>
+<td style="text-align: right;">40 %</td>
+<td style="text-align: right;">1000</td>
+<td style="text-align: right;">973</td>
+<td style="text-align: right;">995</td>
+<td style="text-align: right;">1019</td>
+<td style="text-align: right;">97.8 %</td>
+<td style="text-align: right;">95.5 %</td>
+</tr>
+<tr>
+<td style="text-align: right;">45 %</td>
+<td style="text-align: right;">1125</td>
+<td style="text-align: right;">1095</td>
+<td style="text-align: right;">1120</td>
+<td style="text-align: right;">1146</td>
+<td style="text-align: right;">97.8 %</td>
+<td style="text-align: right;">95.5 %</td>
+</tr>
+<tr>
+<td style="text-align: right;">50 %</td>
+<td style="text-align: right;">1250</td>
+<td style="text-align: right;">1245</td>
+<td style="text-align: right;">1271</td>
+<td style="text-align: right;">1274</td>
+<td style="text-align: right;">98.0 %</td>
+<td style="text-align: right;">97.7 %</td>
+</tr>
+<tr>
+<td style="text-align: right;">55 %</td>
+<td style="text-align: right;">1375</td>
+<td style="text-align: right;">1339</td>
+<td style="text-align: right;">1369</td>
+<td style="text-align: right;">1401</td>
+<td style="text-align: right;">97.8 %</td>
+<td style="text-align: right;">95.6 %</td>
+</tr>
+<tr>
+<td style="text-align: right;">60 %</td>
+<td style="text-align: right;">1500</td>
+<td style="text-align: right;">1460</td>
+<td style="text-align: right;">1494</td>
+<td style="text-align: right;">1530</td>
+<td style="text-align: right;">97.7 %</td>
+<td style="text-align: right;">95.4 %</td>
+</tr>
+<tr>
+<td style="text-align: right;">65 %</td>
+<td style="text-align: right;">1625</td>
+<td style="text-align: right;">1581</td>
+<td style="text-align: right;">1618</td>
+<td style="text-align: right;">1658</td>
+<td style="text-align: right;">97.7 %</td>
+<td style="text-align: right;">95.4 %</td>
+</tr>
+<tr>
+<td style="text-align: right;">70 %</td>
+<td style="text-align: right;">1750</td>
+<td style="text-align: right;">1702</td>
+<td style="text-align: right;">1743</td>
+<td style="text-align: right;">1786</td>
+<td style="text-align: right;">97.6 %</td>
+<td style="text-align: right;">95.3 %</td>
+</tr>
+<tr>
+<td style="text-align: right;">75 %</td>
+<td style="text-align: right;">1875</td>
+<td style="text-align: right;">1823</td>
+<td style="text-align: right;">1868</td>
+<td style="text-align: right;">1916</td>
+<td style="text-align: right;">97.6 %</td>
+<td style="text-align: right;">95.1 %</td>
+</tr>
+<tr>
+<td style="text-align: right;">80 %</td>
+<td style="text-align: right;">2000</td>
+<td style="text-align: right;">1942</td>
+<td style="text-align: right;">1992</td>
+<td style="text-align: right;">2044</td>
+<td style="text-align: right;">97.5 %</td>
+<td style="text-align: right;">95.0 %</td>
+</tr>
+<tr>
+<td style="text-align: right;">85 %</td>
+<td style="text-align: right;">2125</td>
+<td style="text-align: right;">2062</td>
+<td style="text-align: right;">2117</td>
+<td style="text-align: right;">2175</td>
+<td style="text-align: right;">97.4 %</td>
+<td style="text-align: right;">94.8 %</td>
+</tr>
+<tr>
+<td style="text-align: right;">90 %</td>
+<td style="text-align: right;">2250</td>
+<td style="text-align: right;">2183</td>
+<td style="text-align: right;">2242</td>
+<td style="text-align: right;">2304</td>
+<td style="text-align: right;">97.4 %</td>
+<td style="text-align: right;">94.7 %</td>
+</tr>
+<tr>
+<td style="text-align: right;">95 %</td>
+<td style="text-align: right;">2375</td>
+<td style="text-align: right;">2304</td>
+<td style="text-align: right;">2366</td>
+<td style="text-align: right;">2436</td>
+<td style="text-align: right;">97.4 %</td>
+<td style="text-align: right;">94.6 %</td>
+</tr>
+<tr>
+<td style="text-align: right;">100 %</td>
+<td style="text-align: right;">2500</td>
+<td style="text-align: right;">2424</td>
+<td style="text-align: right;">2491</td>
+<td style="text-align: right;">2567</td>
+<td style="text-align: right;">97.3 %</td>
+<td style="text-align: right;">94.4 %</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Descarga</strong></p>
+<table>
+<thead>
+<tr>
+<th style="text-align: right;">% del máximo</th>
+<th style="text-align: right;">Consigna (W)</th>
+<th style="text-align: right;">CC interna (W)</th>
+<th style="text-align: right;">CA interna (W)</th>
+<th style="text-align: right;">CA externa (W)</th>
+<th style="text-align: right;">η interna</th>
+<th style="text-align: right;">η externa</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: right;">3 %</td>
+<td style="text-align: right;">63</td>
+<td style="text-align: right;">80</td>
+<td style="text-align: right;">63</td>
+<td style="text-align: right;">60</td>
+<td style="text-align: right;">78.8 %</td>
+<td style="text-align: right;">75.0 %</td>
+</tr>
+<tr>
+<td style="text-align: right;">5 %</td>
+<td style="text-align: right;">125</td>
+<td style="text-align: right;">160</td>
+<td style="text-align: right;">124</td>
+<td style="text-align: right;">118</td>
+<td style="text-align: right;">77.5 %</td>
+<td style="text-align: right;">73.8 %</td>
+</tr>
+<tr>
+<td style="text-align: right;">10 %</td>
+<td style="text-align: right;">250</td>
+<td style="text-align: right;">284</td>
+<td style="text-align: right;">249</td>
+<td style="text-align: right;">243</td>
+<td style="text-align: right;">87.7 %</td>
+<td style="text-align: right;">85.6 %</td>
+</tr>
+<tr>
+<td style="text-align: right;">15 %</td>
+<td style="text-align: right;">375</td>
+<td style="text-align: right;">416</td>
+<td style="text-align: right;">373</td>
+<td style="text-align: right;">368</td>
+<td style="text-align: right;">89.7 %</td>
+<td style="text-align: right;">88.5 %</td>
+</tr>
+<tr>
+<td style="text-align: right;">20 %</td>
+<td style="text-align: right;">500</td>
+<td style="text-align: right;">550</td>
+<td style="text-align: right;">498</td>
+<td style="text-align: right;">494</td>
+<td style="text-align: right;">90.5 %</td>
+<td style="text-align: right;">89.8 %</td>
+</tr>
+<tr>
+<td style="text-align: right;">25 %</td>
+<td style="text-align: right;">625</td>
+<td style="text-align: right;">685</td>
+<td style="text-align: right;">623</td>
+<td style="text-align: right;">619</td>
+<td style="text-align: right;">90.9 %</td>
+<td style="text-align: right;">90.4 %</td>
+</tr>
+<tr>
+<td style="text-align: right;">30 %</td>
+<td style="text-align: right;">750</td>
+<td style="text-align: right;">820</td>
+<td style="text-align: right;">747</td>
+<td style="text-align: right;">745</td>
+<td style="text-align: right;">91.1 %</td>
+<td style="text-align: right;">90.9 %</td>
+</tr>
+<tr>
+<td style="text-align: right;">35 %</td>
+<td style="text-align: right;">875</td>
+<td style="text-align: right;">956</td>
+<td style="text-align: right;">872</td>
+<td style="text-align: right;">870</td>
+<td style="text-align: right;">91.2 %</td>
+<td style="text-align: right;">91.0 %</td>
+</tr>
+<tr>
+<td style="text-align: right;">40 %</td>
+<td style="text-align: right;">1000</td>
+<td style="text-align: right;">1092</td>
+<td style="text-align: right;">997</td>
+<td style="text-align: right;">996</td>
+<td style="text-align: right;">91.3 %</td>
+<td style="text-align: right;">91.2 %</td>
+</tr>
+<tr>
+<td style="text-align: right;">45 %</td>
+<td style="text-align: right;">1125</td>
+<td style="text-align: right;">1230</td>
+<td style="text-align: right;">1121</td>
+<td style="text-align: right;">1121</td>
+<td style="text-align: right;">91.1 %</td>
+<td style="text-align: right;">91.1 %</td>
+</tr>
+<tr>
+<td style="text-align: right;">50 %</td>
+<td style="text-align: right;">1250</td>
+<td style="text-align: right;">1369</td>
+<td style="text-align: right;">1246</td>
+<td style="text-align: right;">1246</td>
+<td style="text-align: right;">91.0 %</td>
+<td style="text-align: right;">91.0 %</td>
+</tr>
+<tr>
+<td style="text-align: right;">55 %</td>
+<td style="text-align: right;">1375</td>
+<td style="text-align: right;">1507</td>
+<td style="text-align: right;">1370</td>
+<td style="text-align: right;">1372</td>
+<td style="text-align: right;">90.9 %</td>
+<td style="text-align: right;">91.0 %</td>
+</tr>
+<tr>
+<td style="text-align: right;">60 %</td>
+<td style="text-align: right;">1500</td>
+<td style="text-align: right;">1647</td>
+<td style="text-align: right;">1495</td>
+<td style="text-align: right;">1497</td>
+<td style="text-align: right;">90.8 %</td>
+<td style="text-align: right;">90.9 %</td>
+</tr>
+<tr>
+<td style="text-align: right;">65 %</td>
+<td style="text-align: right;">1625</td>
+<td style="text-align: right;">1789</td>
+<td style="text-align: right;">1620</td>
+<td style="text-align: right;">1623</td>
+<td style="text-align: right;">90.6 %</td>
+<td style="text-align: right;">90.7 %</td>
+</tr>
+<tr>
+<td style="text-align: right;">70 %</td>
+<td style="text-align: right;">1750</td>
+<td style="text-align: right;">1931</td>
+<td style="text-align: right;">1745</td>
+<td style="text-align: right;">1748</td>
+<td style="text-align: right;">90.4 %</td>
+<td style="text-align: right;">90.5 %</td>
+</tr>
+<tr>
+<td style="text-align: right;">75 %</td>
+<td style="text-align: right;">1875</td>
+<td style="text-align: right;">2073</td>
+<td style="text-align: right;">1869</td>
+<td style="text-align: right;">1874</td>
+<td style="text-align: right;">90.2 %</td>
+<td style="text-align: right;">90.4 %</td>
+</tr>
+<tr>
+<td style="text-align: right;">80 %</td>
+<td style="text-align: right;">2000</td>
+<td style="text-align: right;">2218</td>
+<td style="text-align: right;">1994</td>
+<td style="text-align: right;">1999</td>
+<td style="text-align: right;">89.9 %</td>
+<td style="text-align: right;">90.1 %</td>
+</tr>
+<tr>
+<td style="text-align: right;">85 %</td>
+<td style="text-align: right;">2125</td>
+<td style="text-align: right;">2362</td>
+<td style="text-align: right;">2118</td>
+<td style="text-align: right;">2124</td>
+<td style="text-align: right;">89.7 %</td>
+<td style="text-align: right;">89.9 %</td>
+</tr>
+<tr>
+<td style="text-align: right;">90 %</td>
+<td style="text-align: right;">2250</td>
+<td style="text-align: right;">2508</td>
+<td style="text-align: right;">2243</td>
+<td style="text-align: right;">2250</td>
+<td style="text-align: right;">89.4 %</td>
+<td style="text-align: right;">89.7 %</td>
+</tr>
+<tr>
+<td style="text-align: right;">95 %</td>
+<td style="text-align: right;">2375</td>
+<td style="text-align: right;">2654</td>
+<td style="text-align: right;">2368</td>
+<td style="text-align: right;">2375</td>
+<td style="text-align: right;">89.2 %</td>
+<td style="text-align: right;">89.5 %</td>
+</tr>
+<tr>
+<td style="text-align: right;">100 %</td>
+<td style="text-align: right;">2500</td>
+<td style="text-align: right;">2801</td>
+<td style="text-align: right;">2492</td>
+<td style="text-align: right;">2501</td>
+<td style="text-align: right;">89.0 %</td>
+<td style="text-align: right;">89.3 %</td>
+</tr>
+</tbody>
+</table>
+<h2 id="prioridades-de-seleccion">Prioridades de selección<a class="headerlink" href="#prioridades-de-seleccion" title="Permanent link">&para;</a></h2>
+<h3 id="descarga">Descarga<a class="headerlink" href="#descarga" title="Permanent link">&para;</a></h3>
+<p><strong>Mayor SOC primero</strong>: la batería más cargada descarga primero para equilibrar el estado de carga en el sistema.</p>
+<h3 id="carga">Carga<a class="headerlink" href="#carga" title="Permanent link">&para;</a></h3>
+<p><strong>Menor SOC primero</strong>: la batería menos cargada recibe energía primero.</p>
+<h2 id="histeresis">Histéresis<a class="headerlink" href="#histeresis" title="Permanent link">&para;</a></h2>
+<p>Para evitar la activación y desactivación de «ping-pong», se aplican tres niveles de histéresis:</p>
+<table>
+<thead>
+<tr>
+<th>Histéresis</th>
+<th>Valor</th>
+<th>Descripción</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>SOC</strong></td>
+<td>5 %</td>
+<td>Una batería activa permanece activa hasta que otra la supera en 5% de SOC</td>
+</tr>
+<tr>
+<td><strong>Energía de vida útil</strong></td>
+<td>2.5 kWh</td>
+<td>Desempata el SOC usando energía acumulada de vida útil con ventaja para la batería activa</td>
+</tr>
+<tr>
+<td><strong>Potencia</strong></td>
+<td>10 pp</td>
+<td>Umbral de activación derivado del cruce de eficiencia; desactivación = activación − 10 puntos porcentuales</td>
+</tr>
+</tbody>
+</table>
+<h2 id="reparto-de-potencia">Reparto de potencia<a class="headerlink" href="#reparto-de-potencia" title="Permanent link">&para;</a></h2>
+<p>Tras seleccionar las baterías activas, la potencia total calculada por el <a href="../pd-controller/">controlador PD</a> se reparte entre ellas proporcionalmente, respetando los límites individuales de potencia y SOC. La misma lógica de selección y reparto se aplica siempre que la integración solicita potencia a la flota, no solo durante el control normal de seguimiento de red; incluye carga solar y carga predictiva/desdela red.</p>
+<p>También se pueden configurar topes globales opcionales en <strong>Advanced PD controller</strong> después de activar <strong>Enable system power limits</strong>:</p>
+<table>
+<thead>
+<tr>
+<th>Ajuste</th>
+<th>Efecto</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>System Max Charge Power</code></td>
+<td>Limita la potencia de carga combinada de todas las baterías activas</td>
+</tr>
+<tr>
+<td><code>System Max Discharge Power</code></td>
+<td>Limita la potencia de descarga combinada de todas las baterías activas</td>
+</tr>
+</tbody>
+</table>
+<p>Establece cualquiera en <code>0 W</code> para desactivar el tope de esa dirección. Estos límites se aplican después de determinar la elegibilidad por batería y antes de repartir la potencia, de modo que una batería puede seguir usando todo su límite individual cuando es la única activa. Si hay varias activas, el total combinado se limita al tope de sistema configurado. Las entidades de control deslizante correspondientes solo se crean cuando está activada la función.</p>
+<h2 id="controles-de-cargadescarga-por-bateria">Controles de carga/descarga por batería<a class="headerlink" href="#controles-de-cargadescarga-por-bateria" title="Permanent link">&para;</a></h2>
+<p>Cada batería expone dos interruptores de software:</p>
+<table>
+<thead>
+<tr>
+<th>Interruptor</th>
+<th>Efecto</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Allow Charge</code></td>
+<td>Al desactivarlo, esta batería queda excluida de la carga automática. Puede seguir descargando si <code>Allow Discharge</code> está activado.</td>
+</tr>
+<tr>
+<td><code>Allow Discharge</code></td>
+<td>Al desactivarlo, esta batería queda excluida de la descarga automática. Puede seguir cargando si <code>Allow Charge</code> está activado.</td>
+</tr>
+</tbody>
+</table>
+<p>Estos interruptores no escriben directamente registros de control Modbus. Solo afectan al controlador PD automático de la integración. Si una batería está activa en la dirección desactivada, la integración envía esa batería a <code>0 W</code> y el siguiente ciclo reasigna la potencia entre las baterías elegibles restantes.</p>
+<p>El estado se almacena por batería como <code>allow_charge</code> y <code>allow_discharge</code>. Los valores ausentes tienen como predeterminado activado, por lo que las instalaciones existentes mantienen su comportamiento tras actualizar.</p>
+<h2 id="control-manual-por-bateria">Control manual por batería<a class="headerlink" href="#control-manual-por-bateria" title="Permanent link">&para;</a></h2>
+<p>Cada batería también expone <code>switch.*_battery_manual_mode</code>. Al activarlo, Omnibattery primero envía y verifica una orden de <code>0 W</code>, borra el modo forzado y las consignas de potencia de software de la integración, y retira esa batería del grupo automático. El estado del interruptor se conserva por batería, de modo que la exclusión sobrevive a un reinicio. La batería sigue siendo consultada y permanece incluida en la telemetría física de batería/red, pero no recibe consignas automáticas de potencia; la gestión de seguridad del driver y del BMS sigue activa.</p>
+<p>Al desactivar el interruptor, la batería conserva el control manual mientras se verifica la orden final de reposo. Solo entonces vuelve al grupo automático y se programa un ciclo de control inmediato. Si falla el traspaso a reposo, el interruptor sigue activado y la batería permanece manual.</p>
+<p>En drivers con registros (Marstek, ESPHome), las entidades sin procesar <code>Force Mode</code>, <code>Set Charge Power</code> y <code>Set Discharge Power</code> escriben directamente los registros del dispositivo, y el bucle de control reafirma esos registros en cada ciclo. Por tanto, escribir en ellas mientras la batería está bajo control automático se rechaza con un error que apunta a Manual Mode, en lugar de aceptarse y revertirse un segundo después. Activar el interruptor global <code>Manual Mode</code> o el <code>Battery Manual Mode</code> de esa batería libera la protección. Los registros de configuración de batería, como los cortes de SOC y los topes de potencia, no se ven afectados.</p>
+<p>Este control es independiente del interruptor global <code>Manual Mode</code>. Por ejemplo, con dos baterías, A puede dejarse en modo manual con una potencia elegida por el usuario mientras B continúa automática. Si B ya está cargando, el controlador PD incluye la carga de red CA medida de A para que B reduzca su propia carga y el contador se mantenga en cero. Cuando las baterías automáticas ya no cargan, la carga de red intencionada de A se excluye de la realimentación para que B no descargue para compensarla. La potencia solar acoplada en CC no se incluye cuando el driver expone una lectura de potencia CA independiente.</p>
+<h2 id="registro-unificado-de-bloqueadores">Registro unificado de bloqueadores<a class="headerlink" href="#registro-unificado-de-bloqueadores" title="Permanent link">&para;</a></h2>
+<p>Los permisos de carga y descarga se resuelven mediante un registro de bloqueadores en tiempo de ejecución. Los bloqueadores pueden ser globales o aplicarse a una batería. El controlador consulta este registro antes de retornos tempranos por banda muerta y sensor obsoleto, de modo que una orden activa se detiene en cuanto aparece un bloqueador.</p>
+<p>Los bloqueadores globales incluyen retraso de carga solar, reglas de carga/descarga de franjas horarias, control de descarga basado en precios y pausas de cargador VE sin telemetría. Los bloqueadores por batería incluyen los interruptores <code>Allow Charge</code> y <code>Allow Discharge</code>, SOC máximo, SOC mínimo e histéresis de carga. Otras comprobaciones de disponibilidad como la exclusión por respaldo/fuera de red y por falta de respuesta siguen separadas del registro.</p>
+<p>Los atributos de nivel superior <code>charge_blocked</code> y <code>discharge_blocked</code> informan del estado efectivo del sistema: pasan a <code>true</code> cuando hay un bloqueador global activo o cuando todas las baterías conocidas están bloqueadas en esa dirección. Los detalles por batería siguen visibles en <code>battery_charge_blockers</code> y <code>battery_discharge_blockers</code>.</p>
+<p>El registro se expone en el sensor de diagnóstico <code>Integration Status</code> mediante estos atributos:</p>
+<ul>
+<li><code>charge_blocked</code></li>
+<li><code>discharge_blocked</code></li>
+<li><code>charge_blockers</code></li>
+<li><code>discharge_blockers</code></li>
+<li><code>battery_charge_blockers</code></li>
+<li><code>battery_discharge_blockers</code></li>
+</ul>
+<h2 id="exclusion-de-bateria-sin-respuesta">Exclusión de batería sin respuesta<a class="headerlink" href="#exclusion-de-bateria-sin-respuesta" title="Permanent link">&para;</a></h2>
+<p>Cuando una batería no entrega de forma constante la potencia ordenada —por ejemplo, por un fallo de comunicación Modbus o una respuesta de autoprotección del firmware— la integración la detecta y la retira temporalmente del grupo activo.</p>
+<p>Una batería se marca como sin respuesta cuando su salida medida es inferior al 5% de la consigna durante <strong>3 ciclos de control consecutivos</strong>. Una vez marcada, entra en una <strong>ventana de exclusión de 5 minutos</strong> en la que no recibe órdenes nuevas y las baterías restantes absorben su parte de carga. Cuando expira la ventana, el contador de fallos se reinicia y la batería vuelve a ser elegible.</p>
+<p>Las negativas a descargar con SOC bajo están exentas. En o por debajo de <strong>20% SOC</strong> (o justo por encima del SOC mínimo configurado), el BMS puede cortar la descarga por sí mismo —por ejemplo, una celda débil que cae bajo carga— aunque el SOC informado siga por encima del mínimo. La batería confirma la orden pero entrega 0 W; se trata como un corte esperado del BMS y no como un fallo, así que sigue en el grupo. Esto refleja el manejo de corte del BMS a SOC alto en el lado de carga.</p>
+<p>Este mecanismo evita que una sola batería defectuosa degrade silenciosamente el rendimiento del sistema sin alarmas ni intervención manual.</p>
+</details>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Volver al principio
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Pie" >
+        
+          
+          <a href="../cell-balance-monitor/" class="md-footer__link md-footer__link--prev" aria-label="Anterior: Monitor de equilibrio de celdas">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Anterior
+              </span>
+              <div class="md-ellipsis">
+                Monitor de equilibrio de celdas
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="../daily-operation-timeline/" class="md-footer__link md-footer__link--next" aria-label="Siguiente: Cronología diaria">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Siguiente
+              </span>
+              <div class="md-ellipsis">
+                Cronología diaria
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+        
+<div class="md-social">
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://github.com/ffunes/omnibattery" target="_blank" rel="noopener" title="github.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+    </a>
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://buymeacoffee.com/ffunes" target="_blank" rel="noopener" title="buymeacoffee.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M152-16c-13.3 0-24 10.7-24 24 0 38.9 23.4 59.4 39.1 73.1l1.1 1C184.5 96.4 192 103.9 192 120c0 13.3 10.7 24 24 24s24-10.7 24-24c0-38.9-23.4-59.4-39.1-73.1l-1.1-1C183.5 31.7 176 24.1 176 8c0-13.3-10.7-24-24-24M96 192c-17.7 0-32 14.3-32 32v192c0 53 43 96 96 96h192c41.8 0 77.4-26.7 90.5-64h5.5c70.7 0 128-57.3 128-128s-57.3-128-128-128zm352 192V256c35.3 0 64 28.7 64 64s-28.7 64-64 64M288 8c0-13.3-10.7-24-24-24S240-5.3 240 8c0 38.9 23.4 59.4 39.1 73.1l1.1 1C296.5 96.4 304 103.9 304 120c0 13.3 10.7 24 24 24s24-10.7 24-24c0-38.9-23.4-59.4-39.1-73.1l-1.1-1C295.5 31.7 288 24.1 288 8"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.tabs", "navigation.tabs.sticky", "navigation.sections", "navigation.expand", "navigation.top", "navigation.footer", "toc.follow", "search.suggest", "search.highlight", "content.tabs.link", "content.code.annotate", "content.code.copy", "content.action.edit"], "search": "../../../assets/javascripts/workers/search.a7633da7.min.js", "tags": null, "translations": {"clipboard.copied": "Copiado al portapapeles", "clipboard.copy": "Copiar al portapapeles", "search.result.more.one": "1 m\u00e1s en esta p\u00e1gina", "search.result.more.other": "# m\u00e1s en esta p\u00e1gina", "search.result.none": "No se encontraron documentos", "search.result.one": "1 documento encontrado", "search.result.other": "# documentos encontrados", "search.result.placeholder": "Teclee para comenzar b\u00fasqueda", "search.result.term.missing": "Falta", "select.version": "Seleccionar versi\u00f3n"}, "version": {"provider": "mike"}}</script>
+    
+    
+      <script src="../../../assets/javascripts/bundle.a5f9d56c.min.js"></script>
+      
+    
+  </body>
+</html>

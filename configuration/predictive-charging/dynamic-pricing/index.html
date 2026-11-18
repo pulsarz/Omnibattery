@@ -1,0 +1,3726 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Home Assistant custom integration for monitoring and controlling multiple home-battery brands">
+      
+      
+        <meta name="author" content="ffunes">
+      
+      
+        <link rel="canonical" href="https://ffunes.github.io/omnibattery/configuration/predictive-charging/dynamic-pricing/">
+      
+      
+        <link rel="prev" href="../time-slot/">
+      
+      
+        <link rel="next" href="../real-time-price/">
+      
+      
+        
+          <link rel="alternate" href="./" hreflang="en">
+        
+          <link rel="alternate" href="../../../es/configuration/predictive-charging/dynamic-pricing/" hreflang="es">
+        
+      
+      
+      <link rel="icon" href="../../../assets/logo.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.8.1">
+    
+    
+      
+        <title>Dynamic Pricing mode - Omnibattery</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.57a0d79d.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../assets/stylesheets/palette.fb2fffe2.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="teal" data-md-color-accent="green">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#predictive-charging-with-future-prices" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+      <div data-md-color-scheme="default" data-md-component="outdated" hidden>
+        
+      </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow md-header--lifted" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../../.." title="Omnibattery" class="md-header__button md-logo" aria-label="Omnibattery" data-md-component="logo">
+      
+  <img src="../../../assets/logo.png" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Omnibattery
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Dynamic Pricing mode
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="teal" data-md-color-accent="green"  aria-label="Cambiar a modo oscuro / Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Cambiar a modo oscuro / Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="teal" data-md-color-accent="green"  aria-label="Cambiar a modo claro / Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Cambiar a modo claro / Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+      <div class="md-header__option">
+  <div class="md-select">
+    
+    <button class="md-header__button md-icon" aria-label="Select language">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m12.87 15.07-2.54-2.51.03-.03A17.5 17.5 0 0 0 14.07 6H17V4h-7V2H8v2H1v2h11.17C11.5 7.92 10.44 9.75 9 11.35 8.07 10.32 7.3 9.19 6.69 8h-2c.73 1.63 1.73 3.17 2.98 4.56l-5.09 5.02L4 19l5-5 3.11 3.11zM18.5 10h-2L12 22h2l1.12-3h4.75L21 22h2zm-2.62 7 1.62-4.33L19.12 17z"/></svg>
+    </button>
+    <div class="md-select__inner">
+      <ul class="md-select__list">
+        
+          <li class="md-select__item">
+            <a href="./" hreflang="en" class="md-select__link">
+              English
+            </a>
+          </li>
+        
+          <li class="md-select__item">
+            <a href="../../../es/configuration/predictive-charging/dynamic-pricing/" hreflang="es" class="md-select__link">
+              Español
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</div>
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/ffunes/omnibattery" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    ffunes/omnibattery
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+    
+      
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../.." class="md-tabs__link">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../compatibility/" class="md-tabs__link">
+          
+  
+  
+  Get started
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../../" class="md-tabs__link">
+          
+  
+  
+  Configure
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../features/pd-controller/" class="md-tabs__link">
+          
+  
+  
+  Features
+
+        </a>
+      </li>
+    
+  
+
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../hardware/shelly-pro-3em-mqtt-script/" class="md-tabs__link">
+          
+  
+  
+  Hardware and meters
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../automations/blueprints/" class="md-tabs__link">
+          
+  
+  
+  Automations
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../troubleshooting/" class="md-tabs__link">
+          
+  
+  
+  Support
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../reference/entities/" class="md-tabs__link">
+          
+  
+  
+  Reference
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../reference/architecture/" class="md-tabs__link">
+          
+  
+  
+  Contribute
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+    
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../.." title="Omnibattery" class="md-nav__button md-logo" aria-label="Omnibattery" data-md-component="logo">
+      
+  <img src="../../../assets/logo.png" alt="logo">
+
+    </a>
+    Omnibattery
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/ffunes/omnibattery" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    ffunes/omnibattery
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Get started
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Get started
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../compatibility/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Is my battery compatible?
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../installation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Installation guide
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../upgrading-from-marstek-vem/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Upgrading from Marstek VEM
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Configure
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Configure
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Start here
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+          
+          
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_2" id="__nav_3_2_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Sensors and electrical limits
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Sensors and electrical limits
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../main-sensor/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Main sensor
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../three-phase/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Three-phase current protection
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+          
+          
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_3" id="__nav_3_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Your battery
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Your battery
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../batteries/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Choose a brand
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../batteries/marstek/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Marstek
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../batteries/esphome-lilygo/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ESPHome / LilyGo
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../batteries/zendure/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Zendure
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../batteries/anker/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Anker SOLIX
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../batteries/sessy/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Sessy
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../batteries/indevolt/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Indevolt
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../batteries/hoymiles/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Hoymiles MQTT
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../batteries/huawei/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Huawei
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../hoymiles-ms-a2/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Hoymiles MS-A2 setup
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../time-slots/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Time slots
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+          
+          
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_5" id="__nav_3_5_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Large loads and EV chargers
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Large loads and EV chargers
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../excluded-devices/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Excluded devices
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../features/load-exclusion/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Load exclusion
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+          
+          
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_6" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_3_6" id="__nav_3_6_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Predictive charging
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_6_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Predictive charging
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Which mode should I choose?
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../time-slot/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Time Slot mode
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Dynamic Pricing mode
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Dynamic Pricing mode
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#do-i-need-it" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Do I need it?
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#before-you-start" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Before you start
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#how-to-enable-it" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        How to enable it
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#what-you-will-see" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What you will see
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#if-it-does-not-work" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        If it does not work
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="If it does not work">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#price-source-normalization" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Price-source normalization
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#daily-chronological-plan" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Daily chronological plan
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#automatic-re-evaluation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Automatic re-evaluation
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#negative-price-opportunistic-charging" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Negative-price opportunistic charging
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#smart-pre-discharge-anti-curtailment" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Smart Pre-discharge / Anti-curtailment
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#surplus-price-hold" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Surplus Price Hold
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#price-based-discharge-and-separate-discharge-threshold" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Price-Based Discharge and separate discharge threshold
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#discharge-reserve" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Discharge Reserve
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#minimum-arbitrage-margin-and-round-trip-efficiency" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Minimum Arbitrage Margin and round-trip efficiency
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#high-price-sale" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        High-Price Sale
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="High-Price Sale">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#surplus-arbitrage" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Surplus + arbitrage
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#surplus-only" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Surplus only
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#diagnostic-attributes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Diagnostic attributes
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../real-time-price/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Real-Time Price mode
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Features
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Features
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_4_1" >
+        
+          
+          <label class="md-nav__link" for="__nav_4_1" id="__nav_4_1_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Follow home consumption
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_1_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_1">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Follow home consumption
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../features/pd-controller/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    PD Controller
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../features/hourly-net-balance/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Hourly net balance
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_4_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_4_2" id="__nav_4_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Make the most of solar
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Make the most of solar
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../features/consumption-estimate/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Daily consumption estimate
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../features/solar-charge-delay/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Solar charge delay
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_4_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_4_3" id="__nav_4_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Protect your installation
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Protect your installation
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../features/peak-shaving/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Peak shaving
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../features/temperature-charge-limit/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Temperature charge limit
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_4_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4_4" id="__nav_4_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Care for your battery
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Care for your battery
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../features/weekly-full-charge/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Weekly full charge
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../features/cell-balance-monitor/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Cell balance monitor
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../features/multi-battery/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Multiple batteries
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../features/daily-operation-timeline/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Daily operation timeline
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Hardware and meters
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Hardware and meters
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../hardware/shelly-pro-3em-mqtt-script/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Shelly Pro 3EM MQTT scripts
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Automations
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Automations
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../automations/blueprints/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Blueprints
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_7" >
+        
+          
+          <label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Support
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_7">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Support
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../troubleshooting/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Troubleshooting
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../changelog/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Changelog
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_8" >
+        
+          
+          <label class="md-nav__link" for="__nav_8" id="__nav_8_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Reference
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_8_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_8">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Reference
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../reference/entities/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    HA entities
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_8_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_8_2" id="__nav_8_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Modbus registers
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_8_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_8_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Modbus registers
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../reference/modbus-registers/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../reference/registers/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Complete register table
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_9" >
+        
+          
+          <label class="md-nav__link" for="__nav_9" id="__nav_9_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Contribute
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_9_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_9">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Contribute
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../reference/architecture/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Architecture
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../reference/driver-requirements-template/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Battery driver requirements
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#do-i-need-it" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Do I need it?
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#before-you-start" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Before you start
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#how-to-enable-it" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        How to enable it
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#what-you-will-see" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What you will see
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#if-it-does-not-work" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        If it does not work
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="If it does not work">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#price-source-normalization" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Price-source normalization
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#daily-chronological-plan" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Daily chronological plan
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#automatic-re-evaluation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Automatic re-evaluation
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#negative-price-opportunistic-charging" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Negative-price opportunistic charging
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#smart-pre-discharge-anti-curtailment" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Smart Pre-discharge / Anti-curtailment
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#surplus-price-hold" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Surplus Price Hold
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#price-based-discharge-and-separate-discharge-threshold" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Price-Based Discharge and separate discharge threshold
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#discharge-reserve" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Discharge Reserve
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#minimum-arbitrage-margin-and-round-trip-efficiency" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Minimum Arbitrage Margin and round-trip efficiency
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#high-price-sale" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        High-Price Sale
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="High-Price Sale">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#surplus-arbitrage" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Surplus + arbitrage
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#surplus-only" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Surplus only
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#diagnostic-attributes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Diagnostic attributes
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+    <a href="https://github.com/ffunes/omnibattery/edit/main/site-docs/configuration/predictive-charging/dynamic-pricing.md" title="Edit this page" class="md-content__button md-icon" rel="edit">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M10 20H6V4h7v5h5v3.1l2-2V8l-6-6H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h4zm10.2-7c.1 0 .3.1.4.2l1.3 1.3c.2.2.2.6 0 .8l-1 1-2.1-2.1 1-1c.1-.1.2-.2.4-.2m0 3.9L14.1 23H12v-2.1l6.1-6.1z"/></svg>
+    </a>
+  
+  
+
+
+<h1 id="predictive-charging-with-future-prices">Predictive charging with future prices<a class="headerlink" href="#predictive-charging-with-future-prices" title="Permanent link">&para;</a></h1>
+<p>Dynamic Pricing reads a future price calendar and buys the calculated energy deficit in the cheapest periods that can still deliver it on time. It can also protect stored energy, manage solar export, and sell selected energy during expensive periods.</p>
+<h2 id="do-i-need-it">Do I need it?<a class="headerlink" href="#do-i-need-it" title="Permanent link">&para;</a></h2>
+<p><strong>Use it if</strong> your provider publishes today’s and future interval prices and you want Omnibattery to choose when to charge.</p>
+<p><strong>You do not need it if</strong> your tariff has fixed repeating cheap periods; use <a href="../time-slot/">Time Slot</a>. If your source exposes only the price in effect now, use <a href="../real-time-price/">Real-Time Price</a>.</p>
+<h2 id="before-you-start">Before you start<a class="headerlink" href="#before-you-start" title="Permanent link">&para;</a></h2>
+<ul>
+<li>Configure one supported source: <strong>Nordpool</strong>, <strong>PVPC</strong>, <strong>CKW</strong>, <strong>EPEX Spot</strong>, <strong>ENTSO-e</strong>, <strong>EnergyZero</strong>, <strong>Zonneplan</strong>, <strong>Frank Energie</strong>, <strong>Tibber</strong>, or <strong>BE Electricity Prices</strong> (Belgium).</li>
+<li>Select the provider’s current-price entity unless you use Tibber. EnergyZero uses the selected electricity entity to call <code>energyzero.get_energy_prices</code>; Tibber uses <code>tibber.get_prices</code> and needs no price sensor.</li>
+<li>A solar forecast is optional. A remaining-energy forecast improves daytime replanning and avoids counting solar already produced. <strong>High-Price Sale</strong> set to <em>Surplus only</em> or above needs the configured forecast integration to provide forecasts to Home Assistant’s Energy dashboard, such as Solcast or Forecast.Solar.</li>
+<li>Decide whether you need an export-price source. It is optional and is used by <strong>Surplus Price Hold</strong> and <strong>High-Price Sale</strong>; leave it empty when export is credited at the import price.</li>
+</ul>
+<h2 id="how-to-enable-it">How to enable it<a class="headerlink" href="#how-to-enable-it" title="Permanent link">&para;</a></h2>
+<ol>
+<li>Open <strong>Settings → Devices &amp; services → Omnibattery → Configure</strong> and choose <strong>Dynamic Pricing</strong> as the predictive charging mode.</li>
+<li>Select <strong>Price integration type</strong>, then choose <strong>Electricity price sensor</strong>. Leave the sensor empty for Tibber.</li>
+<li>Select an optional solar forecast and, if required, an export/feed-in price sensor and its integration type.</li>
+<li>Finish the form, then confirm <strong>Predictive Charging</strong> is on in the Omnibattery <strong>Control</strong> tab.</li>
+<li>Leave the optional price controls off until the basic schedule behaves as expected; enable only the policy that matches your goal.</li>
+</ol>
+<p><img alt="Configure a future-price source" src="../../../assets/screenshots/configuration/predictive-charging/dynamic-pricing-form.png" style="display: block; margin: 0 auto;" width="650" /></p>
+<div class="admonition note">
+<p class="admonition-title">Provider-specific sensor choice</p>
+<p>For <strong>BE Electricity Prices</strong> (Belgium), choose its <strong>Current price</strong> sensor. It lists every slot of today and tomorrow at the all-in price for any contract, including time-of-use ones such as ENGIE Empower Flextime, so Dynamic Pricing and <strong>Discharge Reserve</strong> work without a template. For the export curve, choose its <strong>Injection price</strong> sensor with the same type.
+For Zonneplan, choose <strong>Current quarter hourly electricity tariff</strong> for a quarter-hour contract or <strong>Current hourly electricity tariff</strong> for an hourly contract. The older <strong>Current electricity tariff</strong> sensor is also supported. For Nord Pool, choose either an official-integration entity or the HACS sensor; Omnibattery detects the format.</p>
+</div>
+<h2 id="what-you-will-see">What you will see<a class="headerlink" href="#what-you-will-see" title="Permanent link">&para;</a></h2>
+<p><strong>Predictive Charging Active</strong> shows whether charging is needed, the selected periods, their energy quotas, and any energy shortfall. Omnibattery chooses the cheapest eligible period that occurs before each projected need, so the absolute cheapest period can be skipped when it is too late.</p>
+<p>A visible calendar can be informational. When stored energy and expected solar already cover demand, <code>selected_hours</code> may still show useful cheap periods while <code>charging_needed</code> remains false. Reaching a grid-charge target also leaves solar-surplus charging available; it does not lock the battery out of later solar.</p>
+<p>The plan is rebuilt when new information changes the remaining horizon: before selected periods, late in the solar day, after a material SOC drop, after a material solar-forecast revision, when tomorrow’s prices arrive, when a relevant setting changes, or when an excluded large load changes how much forecast solar remains for the battery. Press <strong>Re-evaluate Predictive Charging</strong> to rebuild it immediately.</p>
+<p>Optional controls in the <strong>Control</strong> tab solve different problems:</p>
+<table>
+<thead>
+<tr>
+<th>Goal</th>
+<th>Control</th>
+<th>Result</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Fill available battery space when import prices are negative</td>
+<td><strong>Negative-price opportunistic charging</strong></td>
+<td>Adds qualifying negative-price periods even without a normal energy deficit</td>
+</tr>
+<tr>
+<td>Keep battery energy while the current price is cheap</td>
+<td><strong>Price-Based Discharge</strong></td>
+<td>Blocks ordinary discharge until price exceeds its active threshold</td>
+</tr>
+<tr>
+<td>Avoid losing solar when export is penalized</td>
+<td><strong>Smart Pre-discharge / Anti-curtailment</strong></td>
+<td>Creates battery space before forecast solar-risk periods</td>
+</tr>
+<tr>
+<td>Export solar now and absorb it later when feed-in value is lower</td>
+<td><strong>Surplus Price Hold</strong></td>
+<td>Pauses surplus charging outside selected low export-price periods</td>
+</tr>
+<tr>
+<td>Save stored energy for dearer household-demand periods</td>
+<td><strong>Discharge Reserve</strong></td>
+<td>Raises an economic discharge floor for future expensive demand</td>
+</tr>
+<tr>
+<td>Require a worthwhile buy/sell spread</td>
+<td><strong>Minimum Arbitrage Margin</strong></td>
+<td>Rejects charge or export trades whose spread does not cover losses and the selected margin</td>
+</tr>
+<tr>
+<td>Sell solar-refillable energy during a qualifying price peak</td>
+<td><strong>High-Price Sale</strong> → <em>Surplus only</em></td>
+<td>Exports battery energy that tomorrow’s forecast solar can replace after covering the home until sunrise</td>
+</tr>
+<tr>
+<td>Also sell energy the home needs later, and buy it back</td>
+<td><strong>High-Price Sale</strong> → <em>Surplus + arbitrage</em></td>
+<td>Exports energy only when replacing the household demand it gives up later still saves money</td>
+</tr>
+</tbody>
+</table>
+<h2 id="if-it-does-not-work">If it does not work<a class="headerlink" href="#if-it-does-not-work" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Symptom</th>
+<th>Likely cause</th>
+<th>What to check</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>No schedule appears</td>
+<td>Future prices are unavailable or the wrong provider entity was selected</td>
+<td><code>price_data_status</code>, provider integration, and price-sensor attributes</td>
+</tr>
+<tr>
+<td>Cheap periods appear but no charge starts</td>
+<td>The calendar is informational, no deficit remains, or the per-period quota is already met</td>
+<td><code>charging_needed</code>, <code>slot_energy_targets_kwh</code>, and battery target SOC</td>
+</tr>
+<tr>
+<td>The cheapest period was skipped</td>
+<td>It occurs after the energy deadline, exceeds the price ceiling, or fails the arbitrage margin</td>
+<td><code>energy_deadlines</code>, active price controls, and <code>total_shortfall_kwh</code></td>
+</tr>
+<tr>
+<td>The schedule reports a shortfall</td>
+<td>Eligible periods cannot supply enough energy before it is needed</td>
+<td>Price ceiling, charging power, battery capacity, phase and contracted-power limits</td>
+</tr>
+<tr>
+<td>Tomorrow’s cheaper periods are missing</td>
+<td>The provider has not published them or the active period is allowed to finish before replanning</td>
+<td>Provider data and <strong>Re-evaluate Predictive Charging</strong> after publication</td>
+</tr>
+<tr>
+<td>A price feature is enabled but inactive</td>
+<td>Its required forecast, profile, export price, battery capacity, or grid reading is unavailable</td>
+<td>The feature’s status binary sensor and reason attribute</td>
+</tr>
+<tr>
+<td>Solar surplus exports unexpectedly</td>
+<td><strong>Surplus Price Hold</strong> selected a later, cheaper absorption period</td>
+<td><strong>Surplus Price Hold Status</strong> and its next release time</td>
+</tr>
+<tr>
+<td>The battery will not discharge</td>
+<td><strong>Price-Based Discharge</strong>, <strong>Discharge Reserve</strong>, operating time slots, or another discharge blocker is active</td>
+<td><strong>Integration Status</strong>, feature status sensors, and <a href="../../time-slots/">operating time slots</a></td>
+</tr>
+<tr>
+<td><strong>High-Price Sale</strong> on <em>Surplus only</em> does not sell</td>
+<td>Tomorrow’s solar forecast cannot refill the battery, the forecast integration does not supply Energy dashboard forecasts, or no profitable export period exists</td>
+<td><strong>High-Price Sale Status</strong>, its reason attribute, tomorrow’s solar forecast, and export prices</td>
+</tr>
+</tbody>
+</table>
+<details>
+<summary>Advanced details</summary>
+<h3 id="price-source-normalization">Price-source normalization<a class="headerlink" href="#price-source-normalization" title="Permanent link">&para;</a></h3>
+<p>Omnibattery supports <strong>Nordpool</strong>, <strong>PVPC</strong>, <strong>CKW</strong>, <strong>EPEX Spot</strong>, <strong>ENTSO-e</strong>, <strong>EnergyZero</strong>, <strong>Zonneplan</strong>, <strong>Frank Energie</strong>, <strong>Tibber</strong>, and <strong>BE Electricity Prices</strong>. Provider parsers normalize dated price periods into the same local schedule.</p>
+<p>Frank Energie needs the <a href="https://github.com/HiDiHo01/home-assistant-frank_energie">Frank Energie HACS integration</a>. It reads the chosen sensor’s <code>prices</code> attribute (<code>from</code>, <code>till</code>, <code>price</code>), including tomorrow when available. Prices are already tax-inclusive major currency/kWh and are not rescaled. Use the all-in price sensor for import, for example <code>sensor.frank_energie_electricity_prices_current_electricity_price_all_in</code>, and the including-tax-and-markup sensor for export, for example <code>sensor.frank_energie_electricity_prices_current_electricity_price_including_tax_and_markup</code>. Periods may be hourly or quarter-hourly.
+EnergyZero calls <code>energyzero.get_energy_prices</code> for today and tomorrow using the selected electricity sensor's integration entry, market/all-in price type, and hourly/quarter-hourly interval. Prices include VAT and are already in EUR/kWh; tomorrow is retained when published, while unavailable tomorrow data does not discard today's prices.</p>
+<p>Zonneplan reads the chosen sensor’s <code>forecast</code> attribute, including tomorrow when available. Forecast amounts are divided by 10,000,000 into tax-inclusive major currency/kWh; the current sensor state is already major currency/kWh. Negative and zero prices are preserved. Modern entries keep explicit period boundaries; legacy entries use one-hour periods.</p>
+<p>A Nord Pool HACS entity is read from <code>raw_today</code> and <code>raw_tomorrow</code>. If <code>price_in_cents</code> is true, Omnibattery converts the calendar and live price to major currency/kWh. For an official Nord Pool entity, it resolves the market area, calls <code>nordpool.get_prices_for_date</code>, converts currency/MWh to currency/kWh, and refreshes the cache hourly.</p>
+<p>Tibber calls <code>tibber.get_prices</code>, caches today’s prices and tomorrow’s once published, and refreshes the cache hourly. The official Tibber integration must already be configured.</p>
+<p>The planner uses local wall-clock times. During the autumn daylight saving time (DST) transition, repeated local periods cannot be represented separately; a period whose local end precedes its start is skipped. Review the schedule on clock-change days.</p>
+<h3 id="daily-chronological-plan">Daily chronological plan<a class="headerlink" href="#daily-chronological-plan" title="Permanent link">&para;</a></h3>
+<p>At 00:05 local time, Omnibattery:</p>
+<ol>
+<li>Projects household consumption, solar, and usable battery energy in 15-minute intervals through the next local sunrise. Sunrise is bounded to 00:00–12:00; if it cannot be calculated, the horizon ends at midnight.</li>
+<li>Fetches the available price periods through that horizon.</li>
+<li>Detects when cumulative energy would reach minimum SOC and reserves the cheapest eligible periods that can deliver each requirement before its deadline.</li>
+<li>Calculates the daily average price over the available horizon.</li>
+<li>Gives each selected period an energy quota; only energy without an earlier deadline is optimized freely by price.</li>
+</ol>
+<p>“Cheapest” means cheapest among periods that can meet the requirement in time. The projection caps stored energy at usable fleet capacity, so solar that cannot fit is not carried forward as phantom energy. A partial plan remains executable but records whether price filtering or physical period capacity caused the uncovered kWh.</p>
+<p>Only today’s remaining solar enters the control horizon. Household demand after midnight is included through sunrise, when tomorrow’s production can begin. <strong>Solar Forecast Safety Margin</strong> is subtracted once from that forecast. New installations start at approximately 5% of configured fleet capacity; if capacity is unavailable during setup, the fallback is no margin. This is a live control rather than a setup-form field.</p>
+<p>If prices are missing at 00:05, evaluation is retried at 15-minute offsets during the first hour, for up to four retries. If Home Assistant starts after the daily evaluation and no plan exists, it rebuilds the remaining horizon after a 15-second startup delay.</p>
+<h3 id="automatic-re-evaluation">Automatic re-evaluation<a class="headerlink" href="#automatic-re-evaluation" title="Permanent link">&para;</a></h3>
+<p>The daily plan can be rebuilt by these events:</p>
+<ul>
+<li><strong>Before a selected period:</strong> one hour before a future selected period, Omnibattery checks the remaining balance. It silently removes the period if energy is now sufficient or confirms it by notification when the deficit remains. Back-to-back periods are not reconsidered while the previous one is charging.</li>
+<li><strong>Late-day assessment:</strong> when solar start has been detected, this runs about 1.5 hours before estimated production ends; otherwise it uses 16:00. It adds eligible future periods only for a remaining deficit of at least 0.3 kWh. Those periods pass the same price ceiling and optional arbitrage margin as the daily plan.</li>
+<li><strong>SOC drop:</strong> a chronological plan rebuilds after a five-percentage-point drop from the last evaluated fleet average. A fallback non-chronological plan retains the 30-point threshold. An SOC rise does not trigger it.</li>
+<li><strong>Solar forecast revision:</strong> a change of at least 1.5 kWh in either direction rebuilds the plan, with a 30-minute cooldown and a maximum of four such rebuilds per day. Measured solar since the saved reading is removed before comparison, and an unavailable sensor is not treated as a collapsed forecast.</li>
+<li><strong>Excluded-device solar claim:</strong> a material change in an excluded load, such as an electric vehicle session, rebuilds the plan because that device changes how much forecast solar is available to the battery.</li>
+<li><strong>Tomorrow’s prices:</strong> newly published prices rebuild the remaining horizon once per day. If a selected charge period is running, this rebuild waits until it ends.</li>
+<li><strong>Relevant settings:</strong> changes to battery minimum/maximum SOC, <strong>Solar Forecast Safety Margin</strong>, or <strong>Guaranteed Minimum SOC</strong> rebuild the plan on the next control cycle.</li>
+</ul>
+<p>The daily references reset at midnight. Runtime protections, manual control, backup state, time-slot permissions, battery availability, and SOC limits remain authoritative during every rebuild.</p>
+<p><strong>Re-evaluate Predictive Charging</strong> rebuilds the remaining Dynamic Pricing horizon immediately. It does not create a multi-day plan: an afternoon rebuild covers the remaining period through the next sunrise, while the next normal daily plan is built at 00:05.</p>
+<h3 id="negative-price-opportunistic-charging">Negative-price opportunistic charging<a class="headerlink" href="#negative-price-opportunistic-charging" title="Permanent link">&para;</a></h3>
+<p>This opt-in feature independently selects hourly or quarter-hour import periods whose normalized price is below zero. It calculates the battery energy needed to reach each battery’s configured maximum SOC and takes the most negative periods first. A solar forecast is not required.</p>
+<p>Each selected period records <code>deficit</code>, <code>negative_price</code>, or <code>combined</code> as its purpose. A positive-price deficit period retains the normal deficit target. In a combined period, the higher of the deficit and opportunity targets applies. Charging stops at each battery’s configured maximum SOC, and unused opportunity-only periods are removed.</p>
+<p>During an anti-curtailment risk window, opportunity charging can use only battery space left after reserving room for expected solar:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>opportunistic space = current free space − remaining solar reserve
+</code></pre></div>
+<p>A guaranteed-minimum-SOC requirement is the safety exception. Missing solar data makes anti-curtailment fail safe but does not cancel an otherwise valid negative import-price opportunity. Contracted power, battery limits, manual control, backup state, availability, and other safety blockers still apply.</p>
+<h3 id="smart-pre-discharge-anti-curtailment">Smart Pre-discharge / Anti-curtailment<a class="headerlink" href="#smart-pre-discharge-anti-curtailment" title="Permanent link">&para;</a></h3>
+<p>This opt-in feature does not control a solar inverter. It finds periods where import price is at or below <strong>Negative Injection Threshold</strong> and forecast solar surplus exceeds household consumption. Before the first risk period, it selects the most valuable eligible periods for pre-discharge until enough battery space exists, subject to SOC floors, reserves, power limits, and blockers.</p>
+<p>The default negative-injection threshold is 0 currency/kWh. <strong>Pre-discharge Reserve SOC</strong> adds a floor; its default is 20%, while a value of 0 uses the batteries’ existing floors. Risk periods are grouped into approximately one-hour blocks to reduce repeated switching.</p>
+<p>Export behavior can be <strong>Self-consumption only</strong>, <strong>Automatic</strong>, or <strong>Custom limit</strong>:</p>
+<ul>
+<li><strong>Self-consumption only</strong> allows no deliberate grid export and is equivalent to 0 W.</li>
+<li><strong>Automatic</strong> exports only the power needed to create the calculated space.</li>
+<li><strong>Custom limit</strong> caps deliberate grid export at the configured W value; it does not cap total battery discharge used by the home.</li>
+</ul>
+<p>During a risk period, net grid target is clamped to zero so the battery can cover household consumption without deliberate export. Minimum and guaranteed-minimum SOC, operating time slots, manual control, backup state, unavailable batteries, and capacity protection still win. Missing prices, forecast, SOC, capacity, or grid data clears the override and blocker.</p>
+<p><code>curtailment_status</code> reports state, reason, next risk period, required/current space, planned discharge, shortfall, battery targets, selected periods, and active export target. Automation attributes include <code>protected_window_active</code>, <code>headroom_deficit_kwh</code>, <code>inverter_curtailment_required</code>, <code>charge_limit_reason</code>, and <code>charge_limit_reasons</code>. Diagnostics also expose <code>solar_reserve_remaining_kwh</code>, <code>current_free_space_kwh</code>, and <code>opportunistic_space_available_kwh</code>.</p>
+<p><code>active_export_target_w</code> is the battery’s target, not a universal solar-inverter command. An inverter automation must apply and later restore its own limit.</p>
+<h3 id="surplus-price-hold">Surplus Price Hold<a class="headerlink" href="#surplus-price-hold" title="Permanent link">&para;</a></h3>
+<p>This opt-in feature decides when to absorb solar surplus under a dynamic export tariff. It estimates the battery’s remaining daily energy target, distributes expected solar and consumption across future price periods, and selects the lowest export-price periods that can absorb that target. A period with a low price but no available surplus is not selected merely because it is cheap.</p>
+<p>Outside selected periods it adds the <code>surplus_price_hold</code> charge blocker. Battery charging clamps to 0 W and surplus exports, while battery discharge for self-consumption remains available.</p>
+<p>The hold releases in a selected absorption period, after the solar deadline, once the target is met, when the remaining periods cannot cover the target, or when the best remaining saving is below <strong>Surplus Hold Minimum Saving</strong>. That control defaults to 0.02 currency/kWh. The target follows live SOC every cycle, and the plan is rebuilt every five minutes and during the normal Dynamic Pricing rebuilds.</p>
+<p>Missing prices, forecast, usable SOC/capacity, or finite inputs releases the hold. Charge delay, an active grid-charge period, negative-price charging, anti-curtailment, weekly full charge, peak shaving, electric-vehicle pause, manual control, operating-time ownership, and a battery on its SOC floor also release it.</p>
+<p><strong>Export/feed-in price sensor</strong> is optional. When absent, the import curve is reused. Tibber cannot supply the export curve because its service cache belongs to the import source. A failed export sensor does not raise the import-price repair issue.</p>
+<p><strong>Surplus Price Hold Status</strong> reports state, reason, daily target, remaining absorption capacity, deadline, next release, selected periods and their prices, and the curve source. <strong>Integration Status</strong> reports <code>surplus_price_hold</code> while active.</p>
+<h3 id="price-based-discharge-and-separate-discharge-threshold">Price-Based Discharge and separate discharge threshold<a class="headerlink" href="#price-based-discharge-and-separate-discharge-threshold" title="Permanent link">&para;</a></h3>
+<p><strong>Price-Based Discharge</strong> checks the current price every control cycle. If the price is above its threshold, normal PD discharge is allowed; at or below the threshold, discharge is blocked and controller state is frozen.</p>
+<p>Dynamic Pricing uses <strong>Max Price Threshold</strong> when configured; otherwise it uses the daily average calculated over the current planning horizon. If neither exists, this blocker does not act. The maximum threshold also prevents grid charging at prices above it.</p>
+<p><strong>Discharge Price Threshold</strong> can open an idle price band. It must be at or above the charging ceiling:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>price ≥ discharge threshold                   → discharge allowed
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>charge ceiling &lt; price &lt; discharge threshold → neither grid charge nor discharge
+<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>price ≤ charge ceiling                        → discharge blocked; cheap grid charge may run
+</code></pre></div>
+<p>Leave the separate discharge threshold empty to use the maximum price threshold for both decisions. Solar-surplus charging remains available in the idle band. Operating time slots and price permission must both allow discharge; see <a href="../../time-slots/">operating time slots</a>.</p>
+<h3 id="discharge-reserve">Discharge Reserve<a class="headerlink" href="#discharge-reserve" title="Permanent link">&para;</a></h3>
+<p>This opt-in feature saves stored energy for more expensive household-demand periods before the next sunrise. It projects the learned 15-minute demand profile and expected solar, lets the dearest periods claim only the energy they need, and reserves claims that exceed the current price by <strong>Discharge Reserve Minimum Saving</strong>. That control defaults to 0.05 currency/kWh.</p>
+<p>Expected solar surplus can release part of the reserve, but only when it can physically fit in the battery. Surplus that <strong>Surplus Price Hold</strong> plans to export receives no credit. The planner credits 75% of qualifying expected surplus so forecast uncertainty cannot release the full reserve before actual production arrives.</p>
+<p>A cheaper grid charge before a dear period releases it too. A period counts when buying the energy back there, its price divided by the round-trip efficiency plus <strong>Minimum Arbitrage Margin</strong>, costs no more than the current price plus <strong>Discharge Reserve Minimum Saving</strong>. Only periods after the next daily evaluation at 00:05 count, because that evaluation plans the night charge from the battery's actual SOC. Each counts only for what the battery can take at its charge power without pushing out expected solar, and not above <strong>Max Price Threshold (Charge)</strong>. For example, at 18:15 at 0.676 €/kWh, a night at 0.436 €/kWh buys the energy back for 0.436 / 0.82 + 0.05 ≈ 0.585 €/kWh, so it is used now instead of held for tomorrow evening.</p>
+<p>The resulting energy becomes an added fleet SOC floor. Energy above it remains available now, and the floor falls when the current period becomes expensive. The configured battery <code>min_soc</code> is not rewritten. Peak shaving, emergency protection, and anti-curtailment can bypass this economic blocker.</p>
+<p>The reserve ends at the next sunrise. Missing prices, consumption profile, usable energy, or future demand leaves it at the configured minimum SOC. Manual control, anti-curtailment, peak shaving, operating-time ownership, and an explicit per-period SOC override also release it.</p>
+<p><strong>Discharge Reserve Status</strong> reports active state, reason, reserved energy/percentage, reference price, claims, expected solar credit, grid refill credit (<code>refill_credit_kwh</code>, <code>refills</code>, <code>refill_from</code>), horizon demand, and horizon surplus. <strong>Integration Status</strong> reports <code>price_reserve_hold</code> while a battery is held.</p>
+<h3 id="minimum-arbitrage-margin-and-round-trip-efficiency">Minimum Arbitrage Margin and round-trip efficiency<a class="headerlink" href="#minimum-arbitrage-margin-and-round-trip-efficiency" title="Permanent link">&para;</a></h3>
+<p>The optional <strong>Minimum Arbitrage Margin</strong> rejects a charge period unless the expected future discharge value covers conversion losses and the selected margin:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>expected_discharge_price × round_trip_efficiency − charge_price ≥ margin
+</code></pre></div>
+<p>The margin is disabled when empty or set to 0. It applies in addition to <strong>Max Price Threshold</strong>, and the stricter ceiling wins. It gates the 00:05 plan and every later rebuild, including the late-day assessment. Energy needed for <strong>Guaranteed Minimum SOC</strong> is the exception: only <strong>Max Price Threshold</strong> limits it.</p>
+<p><code>expected_discharge_price</code> is set per stored kWh, not for the whole deficit. The cheapest charge periods take the most expensive later periods, and each later period counts once. So the first kWh is compared with the evening peak, and the last with whatever cheaper hour it would replace. Energy the home needs at a given time is compared with the import price at that time. When importing then costs less than charging earlier with the round-trip losses, that energy is left to the grid and reported as <code>cheaper_to_import_kwh</code> instead of a shortfall. If no period qualifies, <code>chronological_plan_reason</code> is <code>price_threshold</code> and <code>cheapest_rejected_slot</code> shows the cheapest period with the ceiling it missed.</p>
+<p><strong>Round-Trip Efficiency</strong> represents marginal AC-to-AC energy efficiency; lower values require a larger gross spread. While it is left at the default 0.85, the integration uses the efficiency it measures on your batteries instead (capacity-weighted across the fleet), once a battery has enough history: at least 50 equivalent cycles with a lifetime ratio between 0.75 and 0.95, or, on Venus A/D, both charge and discharge legs sampled. Without a valid measurement it stays at 0.85. Any other value you set is always used as is. The value in use and its source are shown as <code>round_trip_efficiency_used</code> and <code>round_trip_efficiency_source</code> on the predictive-charging diagnostics.</p>
+<p>The same minimum margin applies to <strong>High-Price Sale</strong>, so the charge and sell decisions use one economic risk preference.</p>
+<h3 id="high-price-sale">High-Price Sale<a class="headerlink" href="#high-price-sale" title="Permanent link">&para;</a></h3>
+<p>One select, off by default and available only with <strong>Dynamic Pricing</strong>, sets how much stored energy may be sold into expensive export periods. Each level includes the one below it:</p>
+<ul>
+<li><strong>Off</strong>: nothing is sold.</li>
+<li><strong>Surplus only</strong>: sells energy the house will not need before sunrise and tomorrow’s solar can refill. It never makes you buy from the grid.</li>
+<li><strong>Surplus + arbitrage</strong>: also sells energy the house needs later, and buys it back from the grid when that is cheaper.</li>
+</ul>
+<h4 id="surplus-arbitrage">Surplus + arbitrage<a class="headerlink" href="#surplus-arbitrage" title="Permanent link">&para;</a></h4>
+<p>This level also sells stored energy in a qualifying expensive period only when doing so still saves money after the household demand that energy would otherwise have covered is bought from the grid. Energy without later household demand is not sold, and export never crosses a battery’s SOC floor.</p>
+<p>When the forecast says the battery will run out before sunrise and <strong>Discharge Reserve</strong> is off, Omnibattery compares the export price with the last household-demand periods that would be bought back because of the sale. It starts with the latest period before sunrise and stops at the first sale that would not pay. For example, if the battery would last until 05:00, selling at 18:00 makes it run out a little earlier, around 04:00. What you buy back is the 04:00–05:00 demand, so the sale is compared with that price—not with the expensive 20:00 period the battery still covers.</p>
+<p>If the battery is forecast to last until sunrise, or <strong>Discharge Reserve</strong> is on, the conservative rule remains: the export price must beat the highest later import price, plus <strong>Minimum Arbitrage Margin</strong>. The dearest qualifying export period receives energy first. Deliberate net-grid export uses the fleet’s effective discharge limit; there is no separate high-price export-cap control.</p>
+<h4 id="surplus-only">Surplus only<a class="headerlink" href="#surplus-only" title="Permanent link">&para;</a></h4>
+<p>This level sells battery energy that the house will not need before tomorrow’s sunrise, but only when tomorrow’s forecast solar can refill it.</p>
+<p>Its export budget starts with usable battery energy, then keeps enough for forecast household consumption until sunrise and the <strong>Solar Forecast Safety Margin</strong>. The cost of selling is the export income given up tomorrow while solar refills the battery—not the price originally paid to charge it. It sells only when the current export price is higher than the highest export price expected during tomorrow’s refill, adjusted for <strong>Round-Trip Efficiency</strong> and <strong>Minimum Arbitrage Margin</strong>.</p>
+<p>With a flat feed-in tariff it never sells: selling now and refilling later would only lose energy in the battery cycle. It also stays inactive when tomorrow’s solar forecast cannot refill the battery. It uses tomorrow’s forecast from the solar forecast integration already configured in Omnibattery; no extra sensor is needed, but that integration must provide forecasts to Home Assistant’s Energy dashboard.</p>
+<p>The plan is rebuilt every five minutes and withdrawal is checked every control cycle. Missing price coverage, an expired period, anti-curtailment, capacity protection, weekly full charge, an active grid-charge period, manual control, operating-time ownership, an invalid grid meter, or any discharge blocker stops either export policy. Lowering the select removes the dropped policy on the next control cycle.</p>
+<p><strong>High-Price Sale Status</strong> reports state, reason, target power, protected later demand, usable energy, allocated energy, and per-period allocations with their thresholds. Its surplus-export diagnostics include <code>trigger_1_budget_kwh</code>, <code>refill_price</code>, <code>trigger_1_reason</code>, <code>surplus_export_enabled</code>, and <code>surplus_kwh</code> for each period.</p>
+<h3 id="diagnostic-attributes">Diagnostic attributes<a class="headerlink" href="#diagnostic-attributes" title="Permanent link">&para;</a></h3>
+<p>The <code>predictive_charging_active</code> binary sensor exposes:</p>
+<table>
+<thead>
+<tr>
+<th>Attribute</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>charging_needed</code></td>
+<td>Whether the remaining balance requires grid charging</td>
+</tr>
+<tr>
+<td><code>selected_hours</code></td>
+<td>Selected periods and prices; can be informational when no charge is needed</td>
+</tr>
+<tr>
+<td><code>average_price</code></td>
+<td>Average price over the evaluated profile</td>
+</tr>
+<tr>
+<td><code>estimated_cost</code></td>
+<td>Estimated charging cost</td>
+</tr>
+<tr>
+<td><code>evaluation_timestamp</code></td>
+<td>Time of the last evaluation</td>
+</tr>
+<tr>
+<td><code>price_data_status</code></td>
+<td>Price source result such as <code>ok (N slots)</code>, <code>sensor_unavailable</code>, <code>no_slots</code>, or <code>not_evaluated</code></td>
+</tr>
+<tr>
+<td><code>chronological_planning_active</code></td>
+<td>Whether deadline-aware planning produced the schedule</td>
+</tr>
+<tr>
+<td><code>chronological_source</code> / <code>solar_timeline_source</code></td>
+<td>Household-demand and solar timing sources</td>
+</tr>
+<tr>
+<td><code>earliest_projected_depletion</code></td>
+<td>First projected minimum-SOC crossing without grid charging</td>
+</tr>
+<tr>
+<td><code>deadline_required_kwh</code> / <code>flexible_required_kwh</code></td>
+<td>Energy tied to deadlines and energy optimized freely by price</td>
+</tr>
+<tr>
+<td><code>deadline_shortfall_kwh</code> / <code>total_shortfall_kwh</code></td>
+<td>Urgent and total energy that eligible periods cannot deliver</td>
+</tr>
+<tr>
+<td><code>energy_deadlines</code></td>
+<td>Cumulative requirements and local ISO deadlines</td>
+</tr>
+<tr>
+<td><code>slot_energy_targets_kwh</code> / <code>slot_deadlines</code></td>
+<td>Per-period quotas and deadlines</td>
+</tr>
+<tr>
+<td><code>energy_horizon_end</code></td>
+<td>Next-sunrise boundary, or midnight when sunrise cannot be calculated</td>
+</tr>
+<tr>
+<td><code>planning_horizon_reason</code></td>
+<td>Why the plan did or did not extend past the next sunrise: <code>extended</code>, <code>no_price_slots</code>, <code>no_tomorrow_prices</code>, <code>solar_profile_off</code>, <code>no_tomorrow_solar_periods</code> (no dated forecast for tomorrow, from the sensor or the Energy dashboard), <code>no_consumption_profile</code>, or <code>daily_evaluation</code></td>
+</tr>
+<tr>
+<td><code>overnight_consumption_kwh</code></td>
+<td>Forecast household demand after midnight through the boundary</td>
+</tr>
+</tbody>
+</table>
+<p>Notifications use the same planning boundary and show overnight demand separately. The dated solar timeline prefers provider periods, then a mature local solar profile, then a sinusoidal daylight curve; an invalid source falls back atomically to the next one.</p>
+</details>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Footer" >
+        
+          
+          <a href="../time-slot/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Time Slot mode">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              <div class="md-ellipsis">
+                Time Slot mode
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="../real-time-price/" class="md-footer__link md-footer__link--next" aria-label="Next: Real-Time Price mode">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              <div class="md-ellipsis">
+                Real-Time Price mode
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+        
+<div class="md-social">
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://github.com/ffunes/omnibattery" target="_blank" rel="noopener" title="github.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+    </a>
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://buymeacoffee.com/ffunes" target="_blank" rel="noopener" title="buymeacoffee.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M152-16c-13.3 0-24 10.7-24 24 0 38.9 23.4 59.4 39.1 73.1l1.1 1C184.5 96.4 192 103.9 192 120c0 13.3 10.7 24 24 24s24-10.7 24-24c0-38.9-23.4-59.4-39.1-73.1l-1.1-1C183.5 31.7 176 24.1 176 8c0-13.3-10.7-24-24-24M96 192c-17.7 0-32 14.3-32 32v192c0 53 43 96 96 96h192c41.8 0 77.4-26.7 90.5-64h5.5c70.7 0 128-57.3 128-128s-57.3-128-128-128zm352 192V256c35.3 0 64 28.7 64 64s-28.7 64-64 64M288 8c0-13.3-10.7-24-24-24S240-5.3 240 8c0 38.9 23.4 59.4 39.1 73.1l1.1 1C296.5 96.4 304 103.9 304 120c0 13.3 10.7 24 24 24s24-10.7 24-24c0-38.9-23.4-59.4-39.1-73.1l-1.1-1C295.5 31.7 288 24.1 288 8"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.tabs", "navigation.tabs.sticky", "navigation.sections", "navigation.expand", "navigation.top", "navigation.footer", "toc.follow", "search.suggest", "search.highlight", "content.tabs.link", "content.code.annotate", "content.code.copy", "content.action.edit"], "search": "../../../assets/javascripts/workers/search.a7633da7.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
+    
+    
+      <script src="../../../assets/javascripts/bundle.a5f9d56c.min.js"></script>
+      
+    
+  </body>
+</html>

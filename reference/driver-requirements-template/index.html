@@ -1,0 +1,4723 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Home Assistant custom integration for monitoring and controlling multiple home-battery brands">
+      
+      
+        <meta name="author" content="ffunes">
+      
+      
+        <link rel="canonical" href="https://ffunes.github.io/omnibattery/reference/driver-requirements-template/">
+      
+      
+        <link rel="prev" href="../architecture/">
+      
+      
+      
+        
+          <link rel="alternate" href="./" hreflang="en">
+        
+          <link rel="alternate" href="../../es/reference/driver-requirements-template/" hreflang="es">
+        
+      
+      
+      <link rel="icon" href="../../assets/logo.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.8.1">
+    
+    
+      
+        <title>Battery driver requirements - Omnibattery</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.57a0d79d.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.fb2fffe2.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="teal" data-md-color-accent="green">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#add-a-battery-driver" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+      <div data-md-color-scheme="default" data-md-component="outdated" hidden>
+        
+      </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow md-header--lifted" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="Omnibattery" class="md-header__button md-logo" aria-label="Omnibattery" data-md-component="logo">
+      
+  <img src="../../assets/logo.png" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Omnibattery
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Battery driver requirements
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="teal" data-md-color-accent="green"  aria-label="Cambiar a modo oscuro / Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Cambiar a modo oscuro / Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="teal" data-md-color-accent="green"  aria-label="Cambiar a modo claro / Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Cambiar a modo claro / Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+      <div class="md-header__option">
+  <div class="md-select">
+    
+    <button class="md-header__button md-icon" aria-label="Select language">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m12.87 15.07-2.54-2.51.03-.03A17.5 17.5 0 0 0 14.07 6H17V4h-7V2H8v2H1v2h11.17C11.5 7.92 10.44 9.75 9 11.35 8.07 10.32 7.3 9.19 6.69 8h-2c.73 1.63 1.73 3.17 2.98 4.56l-5.09 5.02L4 19l5-5 3.11 3.11zM18.5 10h-2L12 22h2l1.12-3h4.75L21 22h2zm-2.62 7 1.62-4.33L19.12 17z"/></svg>
+    </button>
+    <div class="md-select__inner">
+      <ul class="md-select__list">
+        
+          <li class="md-select__item">
+            <a href="./" hreflang="en" class="md-select__link">
+              English
+            </a>
+          </li>
+        
+          <li class="md-select__item">
+            <a href="../../es/reference/driver-requirements-template/" hreflang="es" class="md-select__link">
+              Español
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</div>
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/ffunes/omnibattery" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    ffunes/omnibattery
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+    
+      
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../.." class="md-tabs__link">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../compatibility/" class="md-tabs__link">
+          
+  
+  
+  Get started
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../configuration/" class="md-tabs__link">
+          
+  
+  
+  Configure
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../features/pd-controller/" class="md-tabs__link">
+          
+  
+  
+  Features
+
+        </a>
+      </li>
+    
+  
+
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../hardware/shelly-pro-3em-mqtt-script/" class="md-tabs__link">
+          
+  
+  
+  Hardware and meters
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../automations/blueprints/" class="md-tabs__link">
+          
+  
+  
+  Automations
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../troubleshooting/" class="md-tabs__link">
+          
+  
+  
+  Support
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../entities/" class="md-tabs__link">
+          
+  
+  
+  Reference
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../architecture/" class="md-tabs__link">
+          
+  
+  
+  Contribute
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+    
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Omnibattery" class="md-nav__button md-logo" aria-label="Omnibattery" data-md-component="logo">
+      
+  <img src="../../assets/logo.png" alt="logo">
+
+    </a>
+    Omnibattery
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/ffunes/omnibattery" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    ffunes/omnibattery
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Get started
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Get started
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../compatibility/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Is my battery compatible?
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../installation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Installation guide
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../upgrading-from-marstek-vem/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Upgrading from Marstek VEM
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Configure
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Configure
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../configuration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Start here
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_2" id="__nav_3_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Sensors and electrical limits
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Sensors and electrical limits
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../configuration/main-sensor/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Main sensor
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../configuration/three-phase/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Three-phase current protection
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_3" id="__nav_3_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Your battery
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Your battery
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../configuration/batteries/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Choose a brand
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../configuration/batteries/marstek/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Marstek
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../configuration/batteries/esphome-lilygo/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ESPHome / LilyGo
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../configuration/batteries/zendure/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Zendure
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../configuration/batteries/anker/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Anker SOLIX
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../configuration/batteries/sessy/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Sessy
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../configuration/batteries/indevolt/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Indevolt
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../configuration/batteries/hoymiles/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Hoymiles MQTT
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../configuration/batteries/huawei/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Huawei
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../configuration/hoymiles-ms-a2/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Hoymiles MS-A2 setup
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../configuration/time-slots/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Time slots
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_5" id="__nav_3_5_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Large loads and EV chargers
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Large loads and EV chargers
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../configuration/excluded-devices/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Excluded devices
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../features/load-exclusion/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Load exclusion
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_6" id="__nav_3_6_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Predictive charging
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Predictive charging
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../configuration/predictive-charging/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Which mode should I choose?
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../configuration/predictive-charging/time-slot/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Time Slot mode
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../configuration/predictive-charging/dynamic-pricing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Dynamic Pricing mode
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../configuration/predictive-charging/real-time-price/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Real-Time Price mode
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Features
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Features
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_4_1" >
+        
+          
+          <label class="md-nav__link" for="__nav_4_1" id="__nav_4_1_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Follow home consumption
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_1_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_1">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Follow home consumption
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../features/pd-controller/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    PD Controller
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../features/hourly-net-balance/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Hourly net balance
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_4_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_4_2" id="__nav_4_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Make the most of solar
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Make the most of solar
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../features/consumption-estimate/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Daily consumption estimate
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../features/solar-charge-delay/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Solar charge delay
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_4_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_4_3" id="__nav_4_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Protect your installation
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Protect your installation
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../features/peak-shaving/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Peak shaving
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../features/temperature-charge-limit/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Temperature charge limit
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_4_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4_4" id="__nav_4_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Care for your battery
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Care for your battery
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../features/weekly-full-charge/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Weekly full charge
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../features/cell-balance-monitor/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Cell balance monitor
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../features/multi-battery/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Multiple batteries
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../features/daily-operation-timeline/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Daily operation timeline
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Hardware and meters
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Hardware and meters
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../hardware/shelly-pro-3em-mqtt-script/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Shelly Pro 3EM MQTT scripts
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Automations
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Automations
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../automations/blueprints/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Blueprints
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_7" >
+        
+          
+          <label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Support
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_7">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Support
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../troubleshooting/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Troubleshooting
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../changelog/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Changelog
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_8" >
+        
+          
+          <label class="md-nav__link" for="__nav_8" id="__nav_8_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Reference
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_8_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_8">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Reference
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../entities/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    HA entities
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_8_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_8_2" id="__nav_8_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Modbus registers
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_8_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_8_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Modbus registers
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../modbus-registers/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../registers/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Complete register table
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_9" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_9" id="__nav_9_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Contribute
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_9_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_9">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Contribute
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../architecture/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Architecture
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Battery driver requirements
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Battery driver requirements
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#decide-whether-the-device-is-suitable" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Decide whether the device is suitable
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Decide whether the device is suitable">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#automatic-control-admission-gate" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Automatic-control admission gate
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#gather-vendor-and-hardware-evidence" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Gather vendor and hardware evidence
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Gather vendor and hardware evidence">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#firmware-compatibility-matrix" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Firmware compatibility matrix
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#map-the-vendor-protocol-to-omnibattery" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Map the vendor protocol to Omnibattery
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Map the vendor protocol to Omnibattery">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#required-telemetry-and-controls" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Required telemetry and controls
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#optional-telemetry-and-feature-degradation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Optional telemetry and feature degradation
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#implement-the-driver-contract" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Implement the driver contract
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Implement the driver contract">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#abstract-members" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Abstract members
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#coordinator-called-hooks" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Coordinator-called hooks
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#declare-every-capability" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Declare every capability
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#define-entities-beside-the-decoder" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Define entities beside the decoder
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#files-you-touch" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Files you touch
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Files you touch">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#files-the-driver-owns" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Files the driver owns
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#registration-points-current" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Registration points (current)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#known-debt-brand-branches-that-should-be-capabilities" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Known debt: brand branches that should be capabilities
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#before-you-open-the-pull-request" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Before you open the pull request
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#test-the-driver" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Test the driver
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Test the driver">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#driver-tests" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Driver tests
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#integration-tests" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Integration tests
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#validate-on-hardware" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Validate on hardware
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#what-to-include-in-the-pull-request" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What to include in the pull request
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#decide-whether-the-device-is-suitable" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Decide whether the device is suitable
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Decide whether the device is suitable">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#automatic-control-admission-gate" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Automatic-control admission gate
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#gather-vendor-and-hardware-evidence" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Gather vendor and hardware evidence
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Gather vendor and hardware evidence">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#firmware-compatibility-matrix" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Firmware compatibility matrix
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#map-the-vendor-protocol-to-omnibattery" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Map the vendor protocol to Omnibattery
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Map the vendor protocol to Omnibattery">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#required-telemetry-and-controls" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Required telemetry and controls
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#optional-telemetry-and-feature-degradation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Optional telemetry and feature degradation
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#implement-the-driver-contract" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Implement the driver contract
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Implement the driver contract">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#abstract-members" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Abstract members
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#coordinator-called-hooks" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Coordinator-called hooks
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#declare-every-capability" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Declare every capability
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#define-entities-beside-the-decoder" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Define entities beside the decoder
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#files-you-touch" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Files you touch
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Files you touch">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#files-the-driver-owns" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Files the driver owns
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#registration-points-current" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Registration points (current)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#known-debt-brand-branches-that-should-be-capabilities" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Known debt: brand branches that should be capabilities
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#before-you-open-the-pull-request" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Before you open the pull request
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#test-the-driver" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Test the driver
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Test the driver">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#driver-tests" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Driver tests
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#integration-tests" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Integration tests
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#validate-on-hardware" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Validate on hardware
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#what-to-include-in-the-pull-request" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What to include in the pull request
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+    <a href="https://github.com/ffunes/omnibattery/edit/main/site-docs/reference/driver-requirements-template.md" title="Edit this page" class="md-content__button md-icon" rel="edit">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M10 20H6V4h7v5h5v3.1l2-2V8l-6-6H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h4zm10.2-7c.1 0 .3.1.4.2l1.3 1.3c.2.2.2.6 0 .8l-1 1-2.1-2.1 1-1c.1-.1.2-.2.4-.2m0 3.9L14.1 23H12v-2.1l6.1-6.1z"/></svg>
+    </a>
+  
+  
+
+
+<h1 id="add-a-battery-driver">Add a battery driver<a class="headerlink" href="#add-a-battery-driver" title="Permanent link">&para;</a></h1>
+<p>This guide takes a new battery integration from vendor evidence to a reviewable Omnibattery pull request. A driver may use registers, a local application programming interface (API), Message Queuing Telemetry Transport (MQTT), or Home Assistant entities, but it must expose the same semantic battery behavior through <code>drivers/base.py::BatteryDriver</code>.</p>
+<p>Start with evidence from real hardware. A protocol document alone cannot establish sign, scaling, command persistence, latency, or safe behavior after a partial write.</p>
+<h2 id="decide-whether-the-device-is-suitable">Decide whether the device is suitable<a class="headerlink" href="#decide-whether-the-device-is-suitable" title="Permanent link">&para;</a></h2>
+<p>Use these requirement levels while assessing the device:</p>
+<table>
+<thead>
+<tr>
+<th>Code</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>B</strong></td>
+<td>Blocking. Do not enable bidirectional automatic control without it.</td>
+</tr>
+<tr>
+<td><strong>R</strong></td>
+<td>Required for robust production support. Document any provisional mitigation.</td>
+</tr>
+<tr>
+<td><strong>O</strong></td>
+<td>Optional. Its absence removes a feature or entity, not core control.</td>
+</tr>
+</tbody>
+</table>
+<p>Record where each value comes from:</p>
+<table>
+<thead>
+<tr>
+<th>Code</th>
+<th>Source</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>N</strong></td>
+<td>Native device value or control.</td>
+</tr>
+<tr>
+<td><strong>D</strong></td>
+<td>Derived by the driver from validated native data.</td>
+</tr>
+<tr>
+<td><strong>C</strong></td>
+<td>User-configured or validated model constant.</td>
+</tr>
+<tr>
+<td><strong>X</strong></td>
+<td>Unsupported; omit or disable the dependent entity or feature.</td>
+</tr>
+</tbody>
+</table>
+<p>A device is:</p>
+<ul>
+<li><strong>SUITABLE</strong> when every B and R requirement is covered.</li>
+<li><strong>SUITABLE WITH LIMITATIONS</strong> when every B requirement is covered but an R or O item is missing, with affected features and risks documented.</li>
+<li><strong>NOT SUITABLE</strong> when a B item is missing, command semantics cannot be confirmed, or control depends on an unstable or unauthorized interface.</li>
+</ul>
+<h3 id="automatic-control-admission-gate">Automatic-control admission gate<a class="headerlink" href="#automatic-control-admission-gate" title="Permanent link">&para;</a></h3>
+<p>Every item in this list is blocking:</p>
+<ul>
+<li>[ ] A programmable transport supports controlled connect, reconnect, and close.</li>
+<li>[ ] Fresh battery state of charge (SOC) is available as a percentage.</li>
+<li>[ ] Measured battery power is available directly or can be derived from simultaneous measurements.</li>
+<li>[ ] The device accepts power-limited charging and discharging commands.</li>
+<li>[ ] The device accepts and holds a safe idle command (<code>0 W</code>).</li>
+<li>[ ] Safe per-device charge and discharge maxima are known.</li>
+<li>[ ] The manufacturer’s battery management system (BMS) protections remain active under external control.</li>
+<li>[ ] The write cadence does not wear flash or violate API limits.</li>
+<li>[ ] Stale or lost communication can be detected without replaying old values indefinitely.</li>
+</ul>
+<p>Without SOC, measured power, either control direction, or reliable idle, the device is not suitable for bidirectional automatic control. Monitoring-only support can be proposed separately, but it is not a full battery driver.</p>
+<h2 id="gather-vendor-and-hardware-evidence">Gather vendor and hardware evidence<a class="headerlink" href="#gather-vendor-and-hardware-evidence" title="Permanent link">&para;</a></h2>
+<p>Open an issue or engineering note with one assessment per manufacturer, model, and firmware family. Fill in this table before coding:</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Evidence</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Manufacturer and commercial model</td>
+<td><code>...</code></td>
+</tr>
+<tr>
+<td>Device-reported model</td>
+<td><code>...</code></td>
+</tr>
+<tr>
+<td>Firmware versions tested</td>
+<td><code>...</code></td>
+</tr>
+<tr>
+<td>Region or hardware variant</td>
+<td><code>...</code></td>
+</tr>
+<tr>
+<td>Rated capacity and charge/discharge power</td>
+<td><code>...</code></td>
+</tr>
+<tr>
+<td>AC-coupled, DC-coupled, or hybrid topology</td>
+<td><code>...</code></td>
+</tr>
+<tr>
+<td>Official document, revision, date, and link</td>
+<td><code>...</code></td>
+</tr>
+<tr>
+<td>Manufacturer authorization or support contact</td>
+<td><code>...</code></td>
+</tr>
+<tr>
+<td>Hardware used for validation</td>
+<td><code>...</code></td>
+</tr>
+<tr>
+<td>Test date</td>
+<td><code>...</code></td>
+</tr>
+</tbody>
+</table>
+<p>Collect enough detail to answer all of these questions:</p>
+<ul>
+<li>Which models and firmware versions use the same protocol and field layout?</li>
+<li>Is access local, cloud-based, or both? What happens without internet access?</li>
+<li>How are authentication, token renewal, transport encryption, and certificate validation handled?</li>
+<li>What device, unit, endpoint, or topic identifies one physical battery?</li>
+<li>What are the timeout, retry, concurrency, connection, request-size, and rate limits?</li>
+<li>Does telemetry carry a timestamp, sequence number, or time-to-live?</li>
+<li>For every field, what are its type, byte order, unit, scale, sign, valid range, and sentinel values?</li>
+<li>For every write, what are its range, step, persistence, acknowledgement, and error response?</li>
+<li>Are multi-write commands atomic? If not, what order and rollback reach a safe state?</li>
+<li>Does a command survive device restart, network loss, Home Assistant reload, and Omnibattery shutdown?</li>
+<li>Does frequent writing update volatile memory or persistent flash?</li>
+</ul>
+<p>Keep redacted request/response captures and hardware observations. Never include credentials, tokens, network addresses, or complete serial numbers in tests, diagnostics, documentation, or pull requests.</p>
+<h3 id="firmware-compatibility-matrix">Firmware compatibility matrix<a class="headerlink" href="#firmware-compatibility-matrix" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Model</th>
+<th>Firmware</th>
+<th>Transport</th>
+<th>Read</th>
+<th>Write</th>
+<th>Known differences</th>
+<th>Hardware tested</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>...</code></td>
+<td><code>...</code></td>
+<td><code>...</code></td>
+<td><code>yes/no</code></td>
+<td><code>yes/no</code></td>
+<td><code>...</code></td>
+<td><code>yes/no</code></td>
+</tr>
+</tbody>
+</table>
+<p>A cloud-only API is not rejected automatically. Its latency, expiry, quotas, and outage behavior must still support safe idle and the required control cadence.</p>
+<h2 id="map-the-vendor-protocol-to-omnibattery">Map the vendor protocol to Omnibattery<a class="headerlink" href="#map-the-vendor-protocol-to-omnibattery" title="Permanent link">&para;</a></h2>
+<p>The driver translates protocol details into canonical logical keys and operations. Registers, endpoints, topics, service names, and proprietary modes must stay inside the driver or its transport client.</p>
+<p>Use these conventions:</p>
+<ul>
+<li>Signed net power is positive while charging, negative while discharging, and zero while idle.</li>
+<li><code>battery_power</code> is a physical measurement in the same sign convention, not the last command.</li>
+<li>Publish final units in W, kWh, %, V, and °C.</li>
+<li>Omit a failed or unavailable value. Never replace it with zero when zero is valid.</li>
+<li>Clamp commands to the declared device envelope.</li>
+<li>Return a coherent <code>SetpointResult</code> from every <code>apply_setpoint()</code> path, including failures and writes without immediate readback.</li>
+<li>Treat an intent cache as command history. It is not measured delivery.</li>
+</ul>
+<h3 id="required-telemetry-and-controls">Required telemetry and controls<a class="headerlink" href="#required-telemetry-and-controls" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Canonical key or operation</th>
+<th>Level</th>
+<th>Vendor requirement</th>
+<th>Accepted substitute</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>battery_soc</code></td>
+<td>B</td>
+<td>Fresh real SOC as a percentage</td>
+<td>A voltage estimate is not full support.</td>
+</tr>
+<tr>
+<td><code>battery_power</code></td>
+<td>B</td>
+<td>Instantaneous power in both directions</td>
+<td>D formula from validated simultaneous flows.</td>
+</tr>
+<tr>
+<td><code>apply_setpoint(+W)</code></td>
+<td>B</td>
+<td>Power-limited charge</td>
+<td>Mode plus limit, or one signed property.</td>
+</tr>
+<tr>
+<td><code>apply_setpoint(-W)</code></td>
+<td>B</td>
+<td>Power-limited discharge</td>
+<td>Mode plus limit, or one signed property.</td>
+</tr>
+<tr>
+<td><code>apply_setpoint(0)</code> and <code>standby()</code></td>
+<td>B</td>
+<td>Held idle without autonomous import or export</td>
+<td>Documented zero-limit and mode sequence.</td>
+</tr>
+<tr>
+<td>Maximum power</td>
+<td>B</td>
+<td>Safe values per model or device</td>
+<td>C values bounded by official maxima.</td>
+</tr>
+<tr>
+<td>Availability and freshness</td>
+<td>B</td>
+<td>Error, timestamp, sequence, or equivalent</td>
+<td>Driver cache-expiry timer.</td>
+</tr>
+<tr>
+<td>Setpoint echo</td>
+<td>R</td>
+<td>Applied mode and limit</td>
+<td>An intent cache may optimize writes but does not confirm delivery.</td>
+</tr>
+<tr>
+<td>Actuator latency</td>
+<td>R</td>
+<td>Command-to-physical-response delay</td>
+<td>Hardware measurement with a conservative margin.</td>
+</tr>
+<tr>
+<td>Readback latency</td>
+<td>R</td>
+<td>Command-to-settled-telemetry delay</td>
+<td>Reuse actuator latency only when testing proves they match.</td>
+</tr>
+<tr>
+<td>Reliable minimum power</td>
+<td>R</td>
+<td>Sustainable non-zero minimum and command step</td>
+<td>Validated per-model C constant.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="optional-telemetry-and-feature-degradation">Optional telemetry and feature degradation<a class="headerlink" href="#optional-telemetry-and-feature-degradation" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Canonical data</th>
+<th>Enables</th>
+<th>If absent</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>battery_total_energy</code></td>
+<td>Stored energy, allocation, and predictive charging</td>
+<td>Require configured nominal capacity.</td>
+</tr>
+<tr>
+<td>Charge/discharge energy totals</td>
+<td>Energy and efficiency entities</td>
+<td>Integrate measured power and persist the result.</td>
+</tr>
+<tr>
+<td><code>max_cell_voltage</code>, <code>min_cell_voltage</code></td>
+<td>Top-of-charge behavior and balance monitoring</td>
+<td>Disable voltage-dependent features.</td>
+</tr>
+<tr>
+<td><code>internal_temperature</code></td>
+<td>Thermal power limiting</td>
+<td>Disable temperature limiting.</td>
+</tr>
+<tr>
+<td><code>inverter_state</code></td>
+<td>Standby and BMS-cutoff confirmation</td>
+<td>Use measured power and omit dependent detection.</td>
+</tr>
+<tr>
+<td><code>ac_offgrid_power</code></td>
+<td>Backup-load exclusion</td>
+<td>Disable automatic backup exclusion.</td>
+</tr>
+<tr>
+<td>MPPT or aggregate solar power</td>
+<td>DC production and solar calculations</td>
+<td>Declare the applicable solar capabilities false.</td>
+</tr>
+<tr>
+<td>Alarm or fault state</td>
+<td>Alarm notifications</td>
+<td>Omit the dependent sensor and notifier input.</td>
+</tr>
+<tr>
+<td>Battery voltage</td>
+<td>Diagnostics</td>
+<td>Omit the entity.</td>
+</tr>
+<tr>
+<td>Stable serial and firmware</td>
+<td>Device identity and support</td>
+<td>Use the best stable device key and omit unavailable entities.</td>
+</tr>
+<tr>
+<td>Hardware SOC cutoff</td>
+<td>Persistent autonomous limits</td>
+<td>Let shared control enforce limits in software.</td>
+</tr>
+<tr>
+<td>Writable hardware power cap</td>
+<td>Persistent device configuration</td>
+<td>Use a software cap without exposing a fake hardware control.</td>
+</tr>
+<tr>
+<td>External-control gate</td>
+<td>Enter and restore external control</td>
+<td>Required only when setpoints depend on the gate.</td>
+</tr>
+<tr>
+<td>Device AC-port delivery</td>
+<td>Correct delivery checks with shared DC solar</td>
+<td>Omit <code>ac_delivered_power</code>; shared code falls back only where valid.</td>
+</tr>
+</tbody>
+</table>
+<p>Unsupported features must be gated through capabilities, entity definitions, or configuration. Do not create entities or decisions from fabricated zeros.</p>
+<h2 id="implement-the-driver-contract">Implement the driver contract<a class="headerlink" href="#implement-the-driver-contract" title="Permanent link">&para;</a></h2>
+<p>Create <code>custom_components/omnibattery/drivers/&lt;brand&gt;.py</code> and subclass <code>BatteryDriver</code>. Use an existing driver with the closest transport as your starting point:</p>
+<ul>
+<li><code>marstek.py</code>, <code>anker.py</code>, and <code>huawei.py</code> show polled Modbus designs.</li>
+<li><code>zendure.py</code> and <code>sessy.py</code> show local HTTP designs.</li>
+<li><code>esphome.py</code> and <code>hoymiles.py</code> show push-fed Home Assistant entity designs.</li>
+</ul>
+<h3 id="abstract-members">Abstract members<a class="headerlink" href="#abstract-members" title="Permanent link">&para;</a></h3>
+<p>Implement every abstract member in <code>drivers/base.py</code>:</p>
+<table>
+<thead>
+<tr>
+<th>Member</th>
+<th>Required behavior</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>capabilities</code></td>
+<td>Return one immutable <code>DriverCapabilities</code> object for the connected model.</td>
+</tr>
+<tr>
+<td><code>connected</code></td>
+<td>Report whether the transport or upstream source is currently usable.</td>
+</tr>
+<tr>
+<td><code>connect()</code></td>
+<td>Establish or validate access; be safe to call again after a failure.</td>
+</tr>
+<tr>
+<td><code>close()</code></td>
+<td>Release sessions, subscriptions, clients, and single-connection resources.</td>
+</tr>
+<tr>
+<td><code>set_shutting_down(value)</code></td>
+<td>Suppress expected transport noise during unload.</td>
+</tr>
+<tr>
+<td><code>read_groups</code></td>
+<td>Group logical keys into schedulable units with valid cadence names.</td>
+</tr>
+<tr>
+<td><code>read_telemetry(keys)</code></td>
+<td>Return decoded logical values, honoring the optional key subset.</td>
+</tr>
+<tr>
+<td><code>apply_setpoint()</code></td>
+<td>Clamp, translate, write, optionally confirm, and return <code>SetpointResult</code>.</td>
+</tr>
+<tr>
+<td><code>write_control()</code></td>
+<td>Write a logical entity control or return <code>False</code> when unsupported.</td>
+</tr>
+<tr>
+<td><code>net_power_from_data()</code></td>
+<td>Reconstruct the echoed signed command or return <code>None</code> when incomplete.</td>
+</tr>
+<tr>
+<td><code>control_dependency_keys</code></td>
+<td>Name values that control needs even when entities are disabled.</td>
+</tr>
+</tbody>
+</table>
+<p><code>BatteryDriver</code> also provides optional semantic hooks: <code>dc_coupled</code>, <code>model_label</code>, <code>serial</code>, <code>balance_dependency_keys</code>, <code>supplemental_discharge_dependency_keys</code>, <code>supplemental_discharge_power_w()</code>, and <code>dynamic_discharge_limit_w()</code>.</p>
+<h3 id="coordinator-called-hooks">Coordinator-called hooks<a class="headerlink" href="#coordinator-called-hooks" title="Permanent link">&para;</a></h3>
+<p>The coordinator also invokes these methods by convention. They are not currently abstract in <code>BatteryDriver</code>, so verify them explicitly during review:</p>
+<table>
+<thead>
+<tr>
+<th>Hook</th>
+<th>Behavior</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>apply_config(max_soc_pct, min_soc_pct, max_charge_power_w, max_discharge_power_w)</code></td>
+<td>Apply supported setup values and deliberately skip inapplicable settings.</td>
+</tr>
+<tr>
+<td><code>standby()</code></td>
+<td>Leave the device at a safe idle state before transport close.</td>
+</tr>
+<tr>
+<td><code>set_charge_cutoff(soc_pct)</code></td>
+<td>Change a hardware cutoff when supported; otherwise return <code>False</code>.</td>
+</tr>
+<tr>
+<td><code>set_rs485_control(enable)</code></td>
+<td>Toggle the external-control gate when supported; otherwise return <code>False</code>.</td>
+</tr>
+<tr>
+<td><code>get_rs485_control()</code></td>
+<td>Confirm the gate state for drivers that declare <code>has_rs485_control=True</code>.</td>
+</tr>
+</tbody>
+</table>
+<p>Do not claim a capability when its corresponding hook cannot fulfill the contract.</p>
+<h3 id="declare-every-capability">Declare every capability<a class="headerlink" href="#declare-every-capability" title="Permanent link">&para;</a></h3>
+<p>Build <code>DriverCapabilities</code> with evidence for every field:</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>What to establish</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>hardware_soc_cutoff</code></td>
+<td>Whether hardware enforces the whole user-visible SOC range.</td>
+</tr>
+<tr>
+<td><code>has_force_mode</code></td>
+<td>Whether a distinct forced mode is part of the command sequence.</td>
+</tr>
+<tr>
+<td><code>push_telemetry</code></td>
+<td>Whether <code>read_telemetry()</code> returns a push-fed cache.</td>
+</tr>
+<tr>
+<td><code>max_charge_power_w</code>, <code>max_discharge_power_w</code></td>
+<td>Safe inclusive envelope for this model.</td>
+</tr>
+<tr>
+<td><code>min_charge_power_w</code>, <code>min_discharge_power_w</code></td>
+<td>Lowest sustainable non-zero command, or zero when no floor exists.</td>
+</tr>
+<tr>
+<td><code>has_mppt_pv</code></td>
+<td>Whether separate maximum power point tracking channels exist.</td>
+</tr>
+<tr>
+<td><code>has_solar_telemetry</code></td>
+<td>Whether independent aggregate solar power exists.</td>
+</tr>
+<tr>
+<td><code>has_alarm_registers</code></td>
+<td>Whether native alarm or fault status is exposed.</td>
+</tr>
+<tr>
+<td><code>has_rs485_control</code></td>
+<td>Whether an external-control gate can be toggled and confirmed.</td>
+</tr>
+<tr>
+<td><code>has_energy_counters</code></td>
+<td>Whether cumulative energy counters are native.</td>
+</tr>
+<tr>
+<td><code>has_daily_energy_counters</code></td>
+<td>Whether native counters reset daily.</td>
+</tr>
+<tr>
+<td><code>has_nominal_capacity</code></td>
+<td>Whether nominal capacity is reported by hardware.</td>
+</tr>
+<tr>
+<td><code>cycles_from_discharge_only</code></td>
+<td>Whether cycle calculation should use discharged energy only.</td>
+</tr>
+<tr>
+<td><code>setpoint_confirm_reliable</code></td>
+<td>Whether immediate command readback is trustworthy.</td>
+</tr>
+<tr>
+<td><code>actuator_latency_s</code></td>
+<td>Conservative measured physical response time.</td>
+</tr>
+<tr>
+<td><code>readback_latency_s</code></td>
+<td>Worst-case time before telemetry settles, or <code>None</code> to reuse actuator latency.</td>
+</tr>
+<tr>
+<td><code>engage_grace_s</code></td>
+<td>Extra idle-to-active allowance, or <code>None</code> for the controller default.</td>
+</tr>
+<tr>
+<td><code>telemetry_liveness_checked</code></td>
+<td>Whether a cache read proves that fresh push data resumed.</td>
+</tr>
+<tr>
+<td><code>charge_cutoff_range</code>, <code>discharge_cutoff_range</code></td>
+<td>Values the hardware write path really accepts.</td>
+</tr>
+</tbody>
+</table>
+<p>Defaults in the dataclass are compatibility behavior for existing drivers. A new driver should set fields intentionally and explain model-dependent values in comments and tests.</p>
+<h3 id="define-entities-beside-the-decoder">Define entities beside the decoder<a class="headerlink" href="#define-entities-beside-the-decoder" title="Permanent link">&para;</a></h3>
+<p>Expose these driver properties even when a platform has no native definitions:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="n">sensor_definitions</span>
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="n">number_definitions</span>
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="n">select_definitions</span>
+<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="n">switch_definitions</span>
+<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="n">binary_sensor_definitions</span>
+<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="n">button_definitions</span>
+<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="n">all_definitions</span>
+</code></pre></div>
+<p>Each definition uses canonical keys and includes the metadata consumed by its Home Assistant platform, such as unit, device class, state class, scale, precision, polling cadence, category, and default enablement. Seed definitions during <code>__init__</code>; <code>connect()</code> may refine them after model or pack discovery. A battery that starts unreachable still needs enough definitions for entities to subscribe and trigger later recovery.</p>
+<p>Add visible names and descriptions to <code>custom_components/omnibattery/strings.json</code> and every file under <code>custom_components/omnibattery/translations/</code>. Reuse an existing canonical key and translation when the meaning and unit are identical.</p>
+<h2 id="files-you-touch">Files you touch<a class="headerlink" href="#files-you-touch" title="Permanent link">&para;</a></h2>
+<p>The target is that a new brand is one driver file plus its tests, translations, and user documentation. The shared control code (<code>__init__.py</code>, <code>control/</code>, <code>pricing/</code>, <code>tracking/</code>, <code>sensors/</code>, and the entity platforms) should never learn a brand name. If your device behaves differently in a way shared code must know about, add a <code>DriverCapabilities</code> field or a semantic hook on <code>BatteryDriver</code>. Do not add a <code>brand ==</code> branch.</p>
+<p>Today the codebase does not fully meet that target. There is no driver registry yet, so a few setup modules still select behavior by brand string. Those modules are listed below as <strong>registration points</strong>. Touch them following the pattern the existing brands already use, and do not add brand branches anywhere else.</p>
+<h3 id="files-the-driver-owns">Files the driver owns<a class="headerlink" href="#files-the-driver-owns" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>File</th>
+<th>Contents</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>drivers/&lt;brand&gt;.py</code></td>
+<td>The <code>BatteryDriver</code> subclass, capabilities, entity definitions, decoding, command translation, and a <code>probe()</code> static method for the config flow.</td>
+</tr>
+<tr>
+<td><code>infra/&lt;transport&gt;_client.py</code></td>
+<td>Only when the transport needs its own client and none of the existing ones fits. Reuse the existing Modbus client when possible.</td>
+</tr>
+<tr>
+<td><code>tests/test_&lt;brand&gt;_driver.py</code></td>
+<td>Driver tests against a fake transport (see <a href="#test-the-driver">Test the driver</a>).</td>
+</tr>
+<tr>
+<td><code>strings.json</code> and every <code>translations/*.json</code></td>
+<td>Entity names, plus config-flow step titles, fields, and errors for the new brand. Reuse existing canonical keys when meaning and unit match.</td>
+</tr>
+<tr>
+<td><code>site-docs/configuration/batteries/&lt;brand&gt;.md</code> and <code>.es.md</code></td>
+<td>User setup page. Also link it from <code>configuration/batteries/index</code>, <code>compatibility</code>, and the <code>nav</code> in <code>mkdocs.yml</code>.</td>
+</tr>
+<tr>
+<td><code>manifest.json</code></td>
+<td>Only when a new library is required. Pin it, and include its license and maintenance status in the pull request.</td>
+</tr>
+<tr>
+<td><code>CHANGELOG.md</code></td>
+<td>One line under the unreleased version.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="registration-points-current">Registration points (current)<a class="headerlink" href="#registration-points-current" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>File</th>
+<th>Where</th>
+<th>What to add</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>drivers/__init__.py</code></td>
+<td>imports and <code>__all__</code></td>
+<td>Export the driver class.</td>
+</tr>
+<tr>
+<td><code>infra/coordinator.py</code></td>
+<td><code>MarstekVenusDataUpdateCoordinator.__init__()</code>, the <code>if self.brand == ...</code> chain</td>
+<td>Construct the driver from its config-entry fields.</td>
+</tr>
+<tr>
+<td><code>infra/coordinator.py</code></td>
+<td><code>device_info</code></td>
+<td>Manufacturer and fallback model label.</td>
+</tr>
+<tr>
+<td><code>config_flow.py</code></td>
+<td><code>async_step_battery_brand()</code> in <strong>both</strong> the config flow and the options flow</td>
+<td>Selector option and dispatch to your connection step.</td>
+</tr>
+<tr>
+<td><code>config_flow.py</code></td>
+<td><code>async_step_battery_connection_&lt;brand&gt;()</code> in <strong>both</strong> flows</td>
+<td>Connection form. Call <code>&lt;Driver&gt;.probe()</code> and store only the fields the runtime needs.</td>
+</tr>
+<tr>
+<td><code>config_flow.py</code></td>
+<td><code>async_step_reconfigure_battery_&lt;brand&gt;()</code> and its dispatch</td>
+<td>Edit the host or credentials of an existing battery.</td>
+</tr>
+<tr>
+<td><code>config_flow.py</code></td>
+<td>SOC-range defaults, power-ceiling defaults, the battery-settings schema, and the probe dispatch</td>
+<td>Your brand's minimum-SOC range, power envelope, taper opt-out, and a capacity field when the device reports no capacity.</td>
+</tr>
+<tr>
+<td><code>infra/mac_tracking.py</code></td>
+<td><code>IP_BASED_BRANDS</code></td>
+<td>Only when the battery is addressed by IP and should follow DHCP changes.</td>
+</tr>
+</tbody>
+</table>
+<p>The config flow is duplicated between the initial setup flow and the options flow. A brand added to only one of them can be added but not edited, or the reverse. Check both.</p>
+<h3 id="known-debt-brand-branches-that-should-be-capabilities">Known debt: brand branches that should be capabilities<a class="headerlink" href="#known-debt-brand-branches-that-should-be-capabilities" title="Permanent link">&para;</a></h3>
+<p>These branches in shared setup code encode hardware traits by brand name. Each should become a capability, a driver hook, or a registry entry. Until then, a new driver is added to them by hand. If your driver is the one that has to extend one of these lists, consider converting it into a capability in the same pull request.</p>
+<table>
+<thead>
+<tr>
+<th>Branch</th>
+<th>Location</th>
+<th>What it should become</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Driver construction chain</td>
+<td><code>infra/coordinator.py</code> <code>__init__()</code></td>
+<td>Driver registry: brand → class and config-entry factory.</td>
+</tr>
+<tr>
+<td>Manufacturer and model fallback</td>
+<td><code>infra/coordinator.py</code> <code>device_info</code></td>
+<td>Driver properties (<code>manufacturer</code>, a default for <code>model_label</code>).</td>
+</tr>
+<tr>
+<td>Full-charge voltage taper disabled for <code>zendure</code>, <code>anker</code>, <code>hoymiles</code>, <code>huawei</code> (plus <code>sessy</code> in the config flow)</td>
+<td><code>infra/coordinator.py</code> <code>__init__()</code>, <code>config_flow.py</code></td>
+<td>A capability such as "cell voltage is reliable for top-of-charge taper".</td>
+</tr>
+<tr>
+<td>Fixed-envelope clamp for <code>sessy</code> and the EMS ceiling for Marstek <code>vD</code></td>
+<td><code>infra/coordinator.py</code> <code>__init__()</code></td>
+<td>Driver-owned limits. The driver already reports <code>max_*_power_w</code>; coordinator clamping should not depend on the brand.</td>
+</tr>
+<tr>
+<td>PV keys dropped for <code>anker</code> without independent PV</td>
+<td><code>infra/coordinator.py</code> <code>_sync_driver_definitions()</code></td>
+<td>A driver hook that prunes keys no longer in its contract.</td>
+</tr>
+<tr>
+<td><code>configuration_url</code> for <code>sessy</code></td>
+<td><code>infra/coordinator.py</code> <code>device_info</code></td>
+<td>An optional driver property.</td>
+</tr>
+<tr>
+<td><code>needs_software_power_cap</code> for Marstek <code>v2</code>/<code>v3</code></td>
+<td><code>infra/coordinator.py</code></td>
+<td>A capability: the hardware cap accepts only fixed choices.</td>
+</tr>
+<tr>
+<td>Device owns its initial configuration (<code>zendure</code>)</td>
+<td><code>__init__.py</code> <code>_device_owns_initial_config()</code></td>
+<td>A capability.</td>
+</tr>
+<tr>
+<td>Per-brand SOC range, power defaults, capacity field, and probe dispatch</td>
+<td><code>config_flow.py</code>, both flows</td>
+<td>A driver-declared config schema and <code>probe()</code> resolved through the registry.</td>
+</tr>
+<tr>
+<td><code>IP_BASED_BRANDS</code></td>
+<td><code>infra/mac_tracking.py</code></td>
+<td>A driver property: addressed by IP.</td>
+</tr>
+</tbody>
+</table>
+<p>Not every software-control decision is brand-based. <code>needs_software_manual_control</code>, <code>needs_software_max_charge</code>, and <code>needs_software_max_discharge</code> are derived from your entity definitions. If you do not define a writable <code>force_mode</code> select, <code>set_charge_power</code> number, or <code>max_charge_power</code> / <code>max_discharge_power</code> number, the integration adds software controls automatically. Declare only the controls the hardware really has.</p>
+<h3 id="before-you-open-the-pull-request">Before you open the pull request<a class="headerlink" href="#before-you-open-the-pull-request" title="Permanent link">&para;</a></h3>
+<ol>
+<li>Check setup with the battery reachable and unreachable, then reload, reconnect, and remove it.</li>
+<li>Add the battery, then edit it through the options flow, not only the initial setup flow.</li>
+<li>Verify the new device in a mixed-brand fleet so selection, allocation, manual ownership, and shutdown do not depend on homogeneous drivers.</li>
+<li>Run <code>git diff --stat</code>. It should show no change in <code>control/</code>, <code>pricing/</code>, <code>tracking/</code>, <code>sensors/</code>, or the controller in <code>__init__.py</code>. If it does, explain why in the pull request: the change is either a new capability or a bug.</li>
+</ol>
+<h2 id="test-the-driver">Test the driver<a class="headerlink" href="#test-the-driver" title="Permanent link">&para;</a></h2>
+<p>Create <code>tests/test_&lt;brand&gt;_driver.py</code>. Use a fake transport, fake Home Assistant states, or a fake service layer so tests never contact real hardware. Existing files such as <code>test_huawei_driver.py</code>, <code>test_zendure_driver.py</code>, and <code>test_esphome_driver.py</code> show the expected seams.</p>
+<h3 id="driver-tests">Driver tests<a class="headerlink" href="#driver-tests" title="Permanent link">&para;</a></h3>
+<p>Cover these behaviors:</p>
+<ul>
+<li>construction and complete capability values;</li>
+<li>connection success, authentication failure, repeated connect, close, and reconnect;</li>
+<li>read-group composition and polling cadence;</li>
+<li>decoding, scaling, sign conversion, sentinels, partial replies, missing keys, and key-filtered reads;</li>
+<li>push-cache expiry and liveness checks where applicable;</li>
+<li>positive, negative, and zero setpoints;</li>
+<li>command clamping, minimum reliable power, and model-specific limits;</li>
+<li>charge-to-discharge, discharge-to-charge, active-to-idle, and idle-to-active transitions;</li>
+<li>write ordering and the safe result of each partial failure;</li>
+<li>immediate, delayed, absent, stale, and mismatched readback;</li>
+<li><code>SetpointResult</code> fields and <code>net_power_from_data()</code>;</li>
+<li><code>apply_config()</code>, <code>standby()</code>, cutoffs, external-control gates, and unsupported controls;</li>
+<li>model detection, firmware variants, entity-definition filtering, and control dependencies;</li>
+<li>derived telemetry formulas at sign and range boundaries;</li>
+<li>synthetic energy persistence when native counters are absent.</li>
+</ul>
+<h3 id="integration-tests">Integration tests<a class="headerlink" href="#integration-tests" title="Permanent link">&para;</a></h3>
+<p>Add or extend tests for:</p>
+<ul>
+<li>coordinator construction and capability forwarding;</li>
+<li>config-flow serialization and editing;</li>
+<li>entity definitions and translations;</li>
+<li>setup with an unreachable battery and later recovery;</li>
+<li>mixed-brand selection and power distribution;</li>
+<li>software SOC or power limits when hardware does not enforce them;</li>
+<li>shutdown reaching idle and restoring vendor control when applicable;</li>
+<li>optional features disappearing cleanly when their telemetry is unsupported.</li>
+</ul>
+<p>Run the focused test first, then the complete unit suite:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>python<span class="w"> </span>-m<span class="w"> </span>pytest<span class="w"> </span>tests/test_&lt;brand&gt;_driver.py
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>python<span class="w"> </span>-m<span class="w"> </span>pytest
+</code></pre></div>
+<p>Tests that request Home Assistant’s <code>hass</code> fixture need the Home Assistant pytest plugin enabled. Follow the separate command pattern in <code>.github/workflows/tests.yml</code> and add the new test file there if the default suite skips it:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>python<span class="w"> </span>-m<span class="w"> </span>pytest<span class="w"> </span>-o<span class="w"> </span><span class="nv">addopts</span><span class="o">=</span><span class="s2">""</span><span class="w"> </span>tests/test_&lt;integration_flow&gt;.py
+</code></pre></div>
+<p>Before opening the pull request, also build the documentation exactly as continuous integration does:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>python<span class="w"> </span>-m<span class="w"> </span>mkdocs<span class="w"> </span>build<span class="w"> </span>--strict
+</code></pre></div>
+<h2 id="validate-on-hardware">Validate on hardware<a class="headerlink" href="#validate-on-hardware" title="Permanent link">&para;</a></h2>
+<p>Unit tests prove translation logic; they do not prove the vendor’s behavior. Record a hardware test for every supported model and firmware family:</p>
+<ul>
+<li>[ ] Connect, read identity and SOC, and close without leaked resources.</li>
+<li>[ ] Recover after a timeout, device restart, Home Assistant reload, and temporary network loss.</li>
+<li>[ ] Reject malformed replies, sentinels, and out-of-range values.</li>
+<li>[ ] Confirm physical power sign during charge, discharge, and idle.</li>
+<li>[ ] Confirm command range, step, clamps, and stable minimum power.</li>
+<li>[ ] Measure normal and worst-case actuator and readback latency.</li>
+<li>[ ] Confirm repeated commands are idempotent and do not write persistent flash unnecessarily.</li>
+<li>[ ] Interrupt each stage of a multi-write sequence and verify the documented safe state.</li>
+<li>[ ] Confirm failed writes do not enter the cache as confirmed state.</li>
+<li>[ ] Exercise minimum and maximum SOC behavior with the BMS protections still active.</li>
+<li>[ ] Stop Omnibattery and verify <code>standby()</code> plus any vendor-control restoration.</li>
+<li>[ ] Run in a mixed-brand pool and verify that measured delivery matches allocation.</li>
+</ul>
+<p>Retain redacted logs or traces that show the requested command, acknowledgement, and measured physical response. State clearly which matrix entries remain untested.</p>
+<h2 id="what-to-include-in-the-pull-request">What to include in the pull request<a class="headerlink" href="#what-to-include-in-the-pull-request" title="Permanent link">&para;</a></h2>
+<p>A reviewer should be able to judge the protocol, safety behavior, product surface, and test evidence without reconstructing your research. Include:</p>
+<ul>
+<li>supported manufacturer, models, regions, and tested firmware;</li>
+<li>official protocol source and authorization status;</li>
+<li>transport, authentication, discovery, and offline behavior;</li>
+<li>the telemetry and control mapping, including sign, scaling, units, sentinels, and persistence;</li>
+<li>every <code>DriverCapabilities</code> value with its evidence or rationale;</li>
+<li>command sequence, clamping, partial-failure behavior, and safe idle path;</li>
+<li>measured actuator and readback latency;</li>
+<li>unsupported features and how they are gated;</li>
+<li>all files added or changed across driver export, coordinator, config flow, entities, translations, tests, and user documentation;</li>
+<li>focused and full test commands with results;</li>
+<li>redacted hardware-test evidence and the exact models and firmware tested;</li>
+<li>known limitations, remaining risks, and explicit follow-up work.</li>
+</ul>
+<p>Do not claim support based only on mocked tests. The brand should be selectable, setup should complete, supported entities should populate, automatic control should reach real hardware safely, and the documented test matrix should identify what was physically verified.</p>
+<details>
+<summary>Protocol assessment worksheets</summary>
+<p>Use these tables in the issue or pull request when the mapping is too large for the summary.</p>
+<p><strong>Transport and access</strong></p>
+<table>
+<thead>
+<tr>
+<th>Aspect</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Local, cloud, or both</td>
+<td><code>...</code></td>
+</tr>
+<tr>
+<td>Protocol and version</td>
+<td><code>...</code></td>
+</tr>
+<tr>
+<td>Address, endpoint, unit, or topic</td>
+<td><code>...</code></td>
+</tr>
+<tr>
+<td>Discovery method</td>
+<td><code>...</code></td>
+</tr>
+<tr>
+<td>Authentication and renewal</td>
+<td><code>...</code></td>
+</tr>
+<tr>
+<td>Encryption and certificate validation</td>
+<td><code>...</code></td>
+</tr>
+<tr>
+<td>Timeout and retry policy</td>
+<td><code>...</code></td>
+</tr>
+<tr>
+<td>Simultaneous connection limit</td>
+<td><code>...</code></td>
+</tr>
+<tr>
+<td>Read/write rate limit</td>
+<td><code>...</code></td>
+</tr>
+<tr>
+<td>Multi-write ordering or atomicity</td>
+<td><code>...</code></td>
+</tr>
+<tr>
+<td>Telemetry timestamp, sequence, or TTL</td>
+<td><code>...</code></td>
+</tr>
+<tr>
+<td>Volatile versus persistent commands</td>
+<td><code>...</code></td>
+</tr>
+<tr>
+<td>Offline behavior</td>
+<td><code>...</code></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Telemetry mapping</strong></p>
+<table>
+<thead>
+<tr>
+<th>Omnibattery key</th>
+<th>B/R/O</th>
+<th>Vendor field</th>
+<th>R/W</th>
+<th>Type/order</th>
+<th>Scale and unit</th>
+<th>Range/sentinels</th>
+<th>Cadence/TTL</th>
+<th>N/D/C/X</th>
+<th>Evidence</th>
+<th>Tested</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>battery_soc</code></td>
+<td>B</td>
+<td><code>...</code></td>
+<td>R</td>
+<td><code>...</code></td>
+<td><code>... → %</code></td>
+<td><code>...</code></td>
+<td><code>...</code></td>
+<td><code>...</code></td>
+<td><code>...</code></td>
+<td>[ ]</td>
+</tr>
+<tr>
+<td><code>battery_power</code></td>
+<td>B</td>
+<td><code>...</code></td>
+<td>R</td>
+<td><code>...</code></td>
+<td><code>... → W</code></td>
+<td><code>...</code></td>
+<td><code>...</code></td>
+<td><code>...</code></td>
+<td><code>...</code></td>
+<td>[ ]</td>
+</tr>
+<tr>
+<td>Setpoint echo</td>
+<td>R</td>
+<td><code>...</code></td>
+<td>R</td>
+<td><code>...</code></td>
+<td><code>...</code></td>
+<td><code>...</code></td>
+<td><code>...</code></td>
+<td><code>...</code></td>
+<td><code>...</code></td>
+<td>[ ]</td>
+</tr>
+<tr>
+<td><code>battery_total_energy</code></td>
+<td>R</td>
+<td><code>...</code></td>
+<td>R/C</td>
+<td><code>...</code></td>
+<td><code>... → kWh</code></td>
+<td><code>...</code></td>
+<td><code>...</code></td>
+<td><code>...</code></td>
+<td><code>...</code></td>
+<td>[ ]</td>
+</tr>
+<tr>
+<td>Energy totals</td>
+<td>O</td>
+<td><code>...</code></td>
+<td>R</td>
+<td><code>...</code></td>
+<td><code>... → kWh</code></td>
+<td><code>...</code></td>
+<td><code>...</code></td>
+<td><code>...</code></td>
+<td><code>...</code></td>
+<td>[ ]</td>
+</tr>
+<tr>
+<td>Cell voltages</td>
+<td>O</td>
+<td><code>...</code></td>
+<td>R</td>
+<td><code>...</code></td>
+<td><code>... → V</code></td>
+<td><code>...</code></td>
+<td><code>...</code></td>
+<td><code>...</code></td>
+<td><code>...</code></td>
+<td>[ ]</td>
+</tr>
+<tr>
+<td><code>internal_temperature</code></td>
+<td>O</td>
+<td><code>...</code></td>
+<td>R</td>
+<td><code>...</code></td>
+<td><code>... → °C</code></td>
+<td><code>...</code></td>
+<td><code>...</code></td>
+<td><code>...</code></td>
+<td><code>...</code></td>
+<td>[ ]</td>
+</tr>
+<tr>
+<td><code>inverter_state</code></td>
+<td>O</td>
+<td><code>...</code></td>
+<td>R</td>
+<td>enum</td>
+<td><code>map: ...</code></td>
+<td><code>...</code></td>
+<td><code>...</code></td>
+<td><code>...</code></td>
+<td><code>...</code></td>
+<td>[ ]</td>
+</tr>
+<tr>
+<td><code>ac_offgrid_power</code></td>
+<td>O</td>
+<td><code>...</code></td>
+<td>R</td>
+<td><code>...</code></td>
+<td><code>... → W</code></td>
+<td><code>...</code></td>
+<td><code>...</code></td>
+<td><code>...</code></td>
+<td><code>...</code></td>
+<td>[ ]</td>
+</tr>
+<tr>
+<td>Alarms or faults</td>
+<td>O</td>
+<td><code>...</code></td>
+<td>R</td>
+<td>bitmap/enum</td>
+<td><code>map: ...</code></td>
+<td><code>...</code></td>
+<td><code>...</code></td>
+<td><code>...</code></td>
+<td><code>...</code></td>
+<td>[ ]</td>
+</tr>
+<tr>
+<td>Solar or MPPT</td>
+<td>O</td>
+<td><code>...</code></td>
+<td>R</td>
+<td><code>...</code></td>
+<td><code>... → W</code></td>
+<td><code>...</code></td>
+<td><code>...</code></td>
+<td><code>...</code></td>
+<td><code>...</code></td>
+<td>[ ]</td>
+</tr>
+<tr>
+<td>Identity and firmware</td>
+<td>O</td>
+<td><code>...</code></td>
+<td>R</td>
+<td>string</td>
+<td><code>...</code></td>
+<td><code>...</code></td>
+<td><code>...</code></td>
+<td><code>...</code></td>
+<td><code>...</code></td>
+<td>[ ]</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Control mapping</strong></p>
+<table>
+<thead>
+<tr>
+<th>Operation</th>
+<th>B/R/O</th>
+<th>Vendor command</th>
+<th>Sequence</th>
+<th>Range/step</th>
+<th>Volatile/persistent</th>
+<th>ACK/readback</th>
+<th>Latency</th>
+<th>Safe failure state</th>
+<th>Evidence</th>
+<th>Tested</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Connect/authenticate</td>
+<td>B</td>
+<td><code>...</code></td>
+<td><code>...</code></td>
+<td>—</td>
+<td>—</td>
+<td><code>...</code></td>
+<td><code>...</code></td>
+<td>no control</td>
+<td><code>...</code></td>
+<td>[ ]</td>
+</tr>
+<tr>
+<td>Charge</td>
+<td>B</td>
+<td><code>...</code></td>
+<td><code>...</code></td>
+<td><code>...</code></td>
+<td><code>...</code></td>
+<td><code>...</code></td>
+<td><code>...</code></td>
+<td><code>...</code></td>
+<td><code>...</code></td>
+<td>[ ]</td>
+</tr>
+<tr>
+<td>Discharge</td>
+<td>B</td>
+<td><code>...</code></td>
+<td><code>...</code></td>
+<td><code>...</code></td>
+<td><code>...</code></td>
+<td><code>...</code></td>
+<td><code>...</code></td>
+<td><code>...</code></td>
+<td><code>...</code></td>
+<td>[ ]</td>
+</tr>
+<tr>
+<td>Idle</td>
+<td>B</td>
+<td><code>...</code></td>
+<td><code>...</code></td>
+<td><code>...</code></td>
+<td><code>...</code></td>
+<td><code>...</code></td>
+<td><code>...</code></td>
+<td><code>...</code></td>
+<td><code>...</code></td>
+<td>[ ]</td>
+</tr>
+<tr>
+<td>Power maxima/minima</td>
+<td>R</td>
+<td><code>...</code></td>
+<td><code>...</code></td>
+<td><code>...</code></td>
+<td><code>...</code></td>
+<td><code>...</code></td>
+<td><code>...</code></td>
+<td>C limit</td>
+<td><code>...</code></td>
+<td>[ ]</td>
+</tr>
+<tr>
+<td>SOC cutoff</td>
+<td>O</td>
+<td><code>...</code></td>
+<td><code>...</code></td>
+<td><code>...</code></td>
+<td><code>...</code></td>
+<td><code>...</code></td>
+<td><code>...</code></td>
+<td>software limit</td>
+<td><code>...</code></td>
+<td>[ ]</td>
+</tr>
+<tr>
+<td>Enable external control</td>
+<td>Conditional</td>
+<td><code>...</code></td>
+<td><code>...</code></td>
+<td><code>...</code></td>
+<td><code>...</code></td>
+<td><code>...</code></td>
+<td><code>...</code></td>
+<td>restore control</td>
+<td><code>...</code></td>
+<td>[ ]</td>
+</tr>
+<tr>
+<td>Restore vendor control</td>
+<td>Conditional</td>
+<td><code>...</code></td>
+<td><code>...</code></td>
+<td>—</td>
+<td><code>...</code></td>
+<td><code>...</code></td>
+<td><code>...</code></td>
+<td><code>...</code></td>
+<td><code>...</code></td>
+<td>[ ]</td>
+</tr>
+<tr>
+<td>Other entity controls</td>
+<td>O</td>
+<td><code>...</code></td>
+<td><code>...</code></td>
+<td><code>...</code></td>
+<td><code>...</code></td>
+<td><code>...</code></td>
+<td><code>...</code></td>
+<td>omit entity</td>
+<td><code>...</code></td>
+<td>[ ]</td>
+</tr>
+</tbody>
+</table>
+</details>
+<details>
+<summary>Existing adaptation examples</summary>
+<p>Marstek Venus E v3 demonstrates a register-backed implementation. It reads <code>battery_soc</code> from register <code>37005</code> and signed <code>battery_power</code> from register <code>30001</code>. Charging writes a charge limit and forced-charge mode; discharging writes a discharge limit and forced-discharge mode; idle writes both directional setpoints to zero and selects no forced direction. The directional setpoints expose a <code>0–2,500 W</code> range and <code>50 W</code> step. The driver declares a <code>0 W</code> minimum reliable operating power because the command registers accept values below the separate hardware power-cap choices.</p>
+<p>Zendure demonstrates valid substitutions for a property-based device:</p>
+<table>
+<thead>
+<tr>
+<th>Vendor difference</th>
+<th>Driver adaptation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>No direct <code>battery_power</code></td>
+<td>Derive output-pack power minus pack-input power after validating sign and simultaneity.</td>
+</tr>
+<tr>
+<td>No native energy counters</td>
+<td>Integrate measured power and persist synthetic totals.</td>
+</tr>
+<tr>
+<td>No nominal capacity</td>
+<td>Require user-configured <code>battery_total_energy</code>.</td>
+</tr>
+<tr>
+<td>No Marstek force mode</td>
+<td>Translate net power into the vendor mode and input/output limits.</td>
+</tr>
+<tr>
+<td>Read-only hardware charge cap</td>
+<td>Combine the device cap with a user software ceiling.</td>
+</tr>
+<tr>
+<td>Cells reported by pack</td>
+<td>Derive global extremes and expose pack-specific keys only when useful.</td>
+</tr>
+<tr>
+<td>Delayed readback</td>
+<td>Declare unreliable immediate confirmation and conservative timing.</td>
+</tr>
+<tr>
+<td>Persistent-write concern</td>
+<td>Use volatile setpoints and reserve persistent writes for explicit configuration changes.</td>
+</tr>
+</tbody>
+</table>
+<p>Accept a substitute only after validating its sign, timing, range, persistence, and failure behavior on hardware. Configured values must remain visibly configured values; do not present them as device telemetry.</p>
+</details>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Footer" >
+        
+          
+          <a href="../architecture/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Architecture">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              <div class="md-ellipsis">
+                Architecture
+              </div>
+            </div>
+          </a>
+        
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+        
+<div class="md-social">
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://github.com/ffunes/omnibattery" target="_blank" rel="noopener" title="github.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+    </a>
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://buymeacoffee.com/ffunes" target="_blank" rel="noopener" title="buymeacoffee.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M152-16c-13.3 0-24 10.7-24 24 0 38.9 23.4 59.4 39.1 73.1l1.1 1C184.5 96.4 192 103.9 192 120c0 13.3 10.7 24 24 24s24-10.7 24-24c0-38.9-23.4-59.4-39.1-73.1l-1.1-1C183.5 31.7 176 24.1 176 8c0-13.3-10.7-24-24-24M96 192c-17.7 0-32 14.3-32 32v192c0 53 43 96 96 96h192c41.8 0 77.4-26.7 90.5-64h5.5c70.7 0 128-57.3 128-128s-57.3-128-128-128zm352 192V256c35.3 0 64 28.7 64 64s-28.7 64-64 64M288 8c0-13.3-10.7-24-24-24S240-5.3 240 8c0 38.9 23.4 59.4 39.1 73.1l1.1 1C296.5 96.4 304 103.9 304 120c0 13.3 10.7 24 24 24s24-10.7 24-24c0-38.9-23.4-59.4-39.1-73.1l-1.1-1C295.5 31.7 288 24.1 288 8"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.tabs", "navigation.tabs.sticky", "navigation.sections", "navigation.expand", "navigation.top", "navigation.footer", "toc.follow", "search.suggest", "search.highlight", "content.tabs.link", "content.code.annotate", "content.code.copy", "content.action.edit"], "search": "../../assets/javascripts/workers/search.a7633da7.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.a5f9d56c.min.js"></script>
+      
+    
+  </body>
+</html>
