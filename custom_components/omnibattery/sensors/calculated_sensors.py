@@ -910,7 +910,10 @@ class SyntheticEnergySensor(CoordinatorEntity, RestoreEntity, SensorEntity):
         if dt <= 0 or dt > _MAX_INTEGRATION_GAP_S:
             return
         kwh = abs(battery) * (dt / 3600.0) / 1000.0
-        if self._direction == "charge" and battery > 0:
+        # Packs that heat themselves in the cold (Zendure AB2000X) draw the heater
+        # through the same pack input, so that energy is never stored: counting
+        # it as charge would drag Lifetime Efficiency down on frosty mornings.
+        if self._direction == "charge" and battery > 0 and not data.get("battery_heating"):
             self._kwh += kwh
         elif self._direction == "discharge" and battery < 0:
             self._kwh += kwh

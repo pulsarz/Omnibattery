@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import asyncio
 import copy
+from dataclasses import dataclass, field
 import functools
 import inspect
 import logging
@@ -149,6 +150,15 @@ from .const import (
     DEFAULT_SLOT_SOC_MIN_FLOOR,
     DEFAULT_SLOT_SOC_MAX_CEILING,
     MAX_TIME_SLOTS,
+    CONF_ZENDURE_TRANSPORT,
+    ZENDURE_TRANSPORT_HTTP,
+    ZENDURE_TRANSPORT_MQTT,
+    CONF_ZENDURE_DEVICE_ID,
+    CONF_ZENDURE_PRODUCT_KEY,
+    CONF_ZENDURE_MQTT_BROKER,
+    CONF_MQTT_HOST,
+    CONF_MQTT_PORT,
+    CONF_ZENDURE_CONTROL_METHOD,
 )
 from .drivers.base import DriverCapabilities
 from .drivers.esphome import EsphomeEntityDriver
@@ -157,6 +167,17 @@ from .drivers.zendure import (
     ZendureLocalDriver,
     detect_model as _detect_zendure_model,
     zendure_power_limits as _zendure_power_limits,
+    ZENDURE_MODEL_HYPER_2000,
+)
+from .drivers.zendure_mqtt import (
+    BROKER_CHOICES as _ZENDURE_MQTT_BROKERS,
+    BROKER_CUSTOM as _ZENDURE_MQTT_BROKER_CUSTOM,
+    BROKER_HOME_ASSISTANT as _ZENDURE_MQTT_BROKER_HA,
+    CONTROL_AUTOMATION as _ZENDURE_CONTROL_AUTOMATION,
+    CONTROL_METHODS as _ZENDURE_CONTROL_METHODS,
+    DEFAULT_MQTT_PORT as _DEFAULT_MQTT_PORT,
+    ZendureMqttDriver,
+    build_transport as _build_zendure_mqtt_transport,
 )
 from .drivers.anker import AnkerModbusDriver
 from .drivers.sessy import SessyLocalDriver
@@ -209,6 +230,299 @@ def _hoymiles_model_hint(user_input: dict[str, Any]) -> str | None:
     """Return an explicit model override or None for retained-topic discovery."""
     selected = user_input.get("hoymiles_model", _HOYMILES_MODEL_AUTO)
     return None if selected == _HOYMILES_MODEL_AUTO else selected
+
+
+# Brand-selector value for the Zendure Hyper 2000. Only a selector choice: the
+# stored entry keeps brand "zendure" (sharing every Zendure behaviour) and marks
+# the MQTT transport separately.
+_ZENDURE_MQTT_BRAND = "zendure_mqtt"
+_ZENDURE_MQTT_DISCOVERY_S = 30.0
+
+
+def _is_zendure_mqtt(battery: dict) -> bool:
+    """True for a stored Zendure battery reached over MQTT (Hyper 2000)."""
+    return (
+        battery.get("brand") == "zendure"
+        and battery.get(CONF_ZENDURE_TRANSPORT) == ZENDURE_TRANSPORT_MQTT
+    )
+
+
+def _brand_selector_value(battery: dict) -> str:
+    """The brand-selector option that represents a stored battery."""
+    if _is_zendure_mqtt(battery):
+        return _ZENDURE_MQTT_BRAND
+    return battery.get("brand", "marstek")
+
+
+def _brand_options() -> list[dict[str, str]]:
+    """Brand choices shared by the config and options flows."""
+    return [
+        {"value": "marstek", "label": "Marstek Venus"},
+        {"value": "zendure", "label": "Zendure SolarFlow"},
+        {"value": _ZENDURE_MQTT_BRAND, "label": "Zendure Hyper 2000 (MQTT)"},
+        {"value": "esphome", "label": "Marstek via LilyGo RS485 (ESPHome)"},
+        {"value": "anker", "label": "Anker SOLIX Solarbank Max AC / 4 E5000 Pro"},
+        {"value": "sessy", "label": "Sessy"},
+        {"value": "indevolt", "label": "Indevolt SolidFlex / PowerFlex"},
+        {"value": "hoymiles", "label": "Hoymiles MQTT"},
+        {"value": "huawei", "label": "Huawei SUN2000 + LUNA2000"},
+    ]
+
+
+def _zendure_mqtt_schema(defaults: dict, default_name: str) -> vol.Schema:
+    """Connection form for a Zendure battery reached over MQTT."""
+    is_mqtt = _is_zendure_mqtt(defaults)
+
+    def _suggested(key: str) -> dict:
+        value = defaults.get(key) if is_mqtt else None
+        return {"suggested_value": value} if value not in (None, "") else {}
+
+    return vol.Schema({
+        vol.Required(CONF_NAME, default=(defaults.get(CONF_NAME) if is_mqtt else None) or default_name): str,
+        vol.Optional(CONF_ZENDURE_DEVICE_ID, description=_suggested(CONF_ZENDURE_DEVICE_ID)): str,
+        vol.Required(
+            CONF_ZENDURE_MQTT_BROKER,
+            default=defaults.get(CONF_ZENDURE_MQTT_BROKER, _ZENDURE_MQTT_BROKER_HA)
+            if is_mqtt else _ZENDURE_MQTT_BROKER_HA,
+        ): SelectSelector(SelectSelectorConfig(
+            options=list(_ZENDURE_MQTT_BROKERS),
+            translation_key="zendure_mqtt_broker",
+            mode=SelectSelectorMode.LIST,
+        )),
+        vol.Optional(CONF_MQTT_HOST, description=_suggested(CONF_MQTT_HOST)): str,
+        vol.Optional(
+            CONF_MQTT_PORT,
+            default=int(defaults.get(CONF_MQTT_PORT) or _DEFAULT_MQTT_PORT) if is_mqtt else _DEFAULT_MQTT_PORT,
+        ): vol.All(
+            NumberSelector(NumberSelectorConfig(min=1, max=65535, step=1, mode=NumberSelectorMode.BOX)),
+            vol.Coerce(int),
+        ),
+        vol.Optional(CONF_USERNAME, description=_suggested(CONF_USERNAME)): str,
+        vol.Optional(CONF_PASSWORD, description=_suggested(CONF_PASSWORD)): TextSelector(
+            TextSelectorConfig(type=TextSelectorType.PASSWORD)
+        ),
+        vol.Required(
+            CONF_ZENDURE_CONTROL_METHOD,
+            default=defaults.get(CONF_ZENDURE_CONTROL_METHOD, _ZENDURE_CONTROL_AUTOMATION)
+            if is_mqtt else _ZENDURE_CONTROL_AUTOMATION,
+        ): SelectSelector(SelectSelectorConfig(
+            options=list(_ZENDURE_CONTROL_METHODS),
+            translation_key="zendure_control_method",
+            mode=SelectSelectorMode.DROPDOWN,
+        )),
+    })
+
+
+@dataclass
+class _ZendureMqttCheck:
+    """Outcome of checking a Zendure MQTT connection form."""
+
+    errors: dict[str, str] = field(default_factory=dict)
+    data: dict[str, Any] = field(default_factory=dict)
+    placeholders: dict[str, str] = field(default_factory=lambda: {"devices": ""})
+    # More than one unconfigured device answered: device id -> label to pick from.
+    candidates: dict[str, str] = field(default_factory=dict)
+
+
+def _configured_zendure_mqtt_ids(batteries, *, skip_index: int | None = None) -> set[str]:
+    """Device ids of Hypers already configured, so discovery can skip them."""
+    ids: set[str] = set()
+    for index, battery in enumerate(batteries or ()):
+        if index == skip_index or not _is_zendure_mqtt(battery):
+            continue
+        device_id = battery.get(CONF_ZENDURE_DEVICE_ID) or battery.get(CONF_HOST)
+        if device_id:
+            ids.add(str(device_id))
+    return ids
+
+
+def _zendure_candidate_label(device_id: str, info: dict) -> str:
+    """``Ab12Cd34 — 3 × AB2000X, 5.76 kWh, 63 %`` (only what was reported)."""
+    details = []
+    if info.get("pack_summary"):
+        details.append(info["pack_summary"])
+    if info.get("capacity_kwh"):
+        details.append(f"{info['capacity_kwh']:g} kWh")
+    if info.get("battery_soc") is not None:
+        details.append(f"{info['battery_soc']:g} %")
+    return f"{device_id} — {', '.join(details)}" if details else device_id
+
+
+async def _validate_zendure_mqtt(
+    hass: HomeAssistant,
+    user_input: dict[str, Any],
+    *,
+    exclude_ids: set[str] | frozenset[str] = frozenset(),
+    discovery_timeout: float | None = None,
+) -> _ZendureMqttCheck:
+    """Reach the broker, find the Hyper and build its battery entry.
+
+    A blank device id listens for reports. Hypers already configured are
+    skipped; one remaining device is adopted, several are returned as
+    ``candidates`` to pick from. The product key is learned from the topic the
+    device answers on and the nominal capacity from its packs' serials.
+    """
+    check = _ZendureMqttCheck()
+    broker = user_input.get(CONF_ZENDURE_MQTT_BROKER, _ZENDURE_MQTT_BROKER_HA)
+    host = (user_input.get(CONF_MQTT_HOST) or "").strip()
+    port = int(user_input.get(CONF_MQTT_PORT) or _DEFAULT_MQTT_PORT)
+    username = (user_input.get(CONF_USERNAME) or "").strip()
+    password = user_input.get(CONF_PASSWORD) or ""
+
+    if broker == _ZENDURE_MQTT_BROKER_CUSTOM and not host:
+        check.errors[CONF_MQTT_HOST] = "mqtt_host_required"
+        return check
+    if broker != _ZENDURE_MQTT_BROKER_CUSTOM and not hass.config_entries.async_entries("mqtt"):
+        check.errors["base"] = "mqtt_not_configured"
+        return check
+
+    transport = _build_zendure_mqtt_transport(
+        hass, broker, host=host, port=port, username=username, password=password
+    )
+    if not await transport.start():
+        check.errors["base"] = "mqtt_broker_unreachable"
+        return check
+    try:
+        device_id = (user_input.get(CONF_ZENDURE_DEVICE_ID) or "").strip()
+        product_key = None
+        if not device_id:
+            found = await ZendureMqttDriver.discover(
+                transport,
+                timeout=_ZENDURE_MQTT_DISCOVERY_S if discovery_timeout is None else discovery_timeout,
+            )
+            if not found:
+                check.errors["base"] = "zendure_no_device_found"
+                return check
+            fresh = {d: k for d, k in found.items() if d not in exclude_ids}
+            if not fresh:
+                check.errors["base"] = "zendure_all_configured"
+                check.placeholders["devices"] = ", ".join(sorted(found))
+                return check
+            if len(fresh) > 1:
+                for candidate, key in sorted(fresh.items()):
+                    _, info = await ZendureMqttDriver.probe(transport, candidate, key)
+                    check.candidates[candidate] = _zendure_candidate_label(candidate, info)
+                return check
+            device_id, product_key = next(iter(fresh.items()))
+        ok, info = await ZendureMqttDriver.probe(transport, device_id, product_key)
+        if not ok:
+            check.errors["base"] = "zendure_no_response"
+            return check
+    finally:
+        await transport.stop()
+
+    custom = broker == _ZENDURE_MQTT_BROKER_CUSTOM
+    check.data = {
+        CONF_NAME: user_input[CONF_NAME],
+        CONF_HOST: device_id,
+        CONF_PORT: 0,
+        CONF_ZENDURE_DEVICE_ID: device_id,
+        "brand": "zendure",
+        CONF_ZENDURE_TRANSPORT: ZENDURE_TRANSPORT_MQTT,
+        CONF_ZENDURE_PRODUCT_KEY: info.get("product_key") or product_key,
+        "zendure_model": ZENDURE_MODEL_HYPER_2000,
+        CONF_ZENDURE_MQTT_BROKER: broker,
+        # Credentials are kept only for a broker of our own; HA's MQTT
+        # integration holds its own.
+        CONF_MQTT_HOST: host if custom else "",
+        CONF_MQTT_PORT: port if custom else _DEFAULT_MQTT_PORT,
+        CONF_USERNAME: username if custom else "",
+        CONF_PASSWORD: password if custom else "",
+        CONF_ZENDURE_CONTROL_METHOD: user_input.get(
+            CONF_ZENDURE_CONTROL_METHOD, _ZENDURE_CONTROL_AUTOMATION
+        ),
+    }
+    if info.get("capacity_kwh"):
+        # Read from the pack serials, so the limits step does not ask for it.
+        check.data["battery_capacity_kwh"] = info["capacity_kwh"]
+    # Only a pack that *was* reported but is not recognised needs the user.
+    # An idle Hyper may answer without its pack list; the driver then reads
+    # the capacity from the packs as soon as they are reported.
+    check.data[_ZENDURE_PACKS_RECOGNISED] = "Unknown" not in (info.get("packs") or ())
+    return check
+
+
+# Battery-config flag: False when setup saw a pack whose serial is unknown.
+_ZENDURE_PACKS_RECOGNISED = "zendure_packs_recognised"
+
+
+def _zendure_capacity_detected(battery: dict) -> bool:
+    """True when a Hyper's capacity comes from its packs (no need to ask)."""
+    return _is_zendure_mqtt(battery) and bool(battery.get(_ZENDURE_PACKS_RECOGNISED, True))
+
+
+class _ZendureMqttStepsMixin:
+    """Connection + pick-a-device steps shared by the config and options flows.
+
+    The connection form is checked by :func:`_validate_zendure_mqtt`. When the
+    broker carries several unconfigured Hypers, a second form lists them; its
+    step id is the connection step id with ``_pick`` appended.
+    """
+
+    _zendure_mqtt_pending: dict[str, Any] | None = None
+
+    async def _zendure_mqtt_connection(
+        self,
+        step_id: str,
+        user_input: dict[str, Any] | None,
+        *,
+        defaults: dict,
+        battery_num: int,
+        exclude_ids: set[str],
+        on_success,
+    ) -> FlowResult:
+        errors: dict[str, str] = {}
+        placeholders: dict[str, str] = {"devices": ""}
+        if user_input is not None:
+            check = await _validate_zendure_mqtt(self.hass, user_input, exclude_ids=exclude_ids)
+            if check.candidates:
+                self._zendure_mqtt_pending = dict(user_input)
+                return self._zendure_mqtt_pick_form(step_id, check.candidates, battery_num)
+            if not check.errors:
+                return await on_success(check.data)
+            errors, placeholders = check.errors, check.placeholders
+            defaults = {**user_input, "brand": "zendure", CONF_ZENDURE_TRANSPORT: ZENDURE_TRANSPORT_MQTT}
+        return self.async_show_form(
+            step_id=step_id,
+            data_schema=_zendure_mqtt_schema(defaults, f"Zendure Hyper 2000 {battery_num}"),
+            errors=errors,
+            description_placeholders={"battery_num": str(battery_num), **placeholders},
+        )
+
+    def _zendure_mqtt_pick_form(self, step_id: str, candidates: dict[str, str], battery_num: int) -> FlowResult:
+        return self.async_show_form(
+            step_id=f"{step_id}_pick",
+            data_schema=vol.Schema({
+                vol.Required(CONF_ZENDURE_DEVICE_ID, default=next(iter(candidates))): SelectSelector(
+                    SelectSelectorConfig(
+                        options=[{"value": d, "label": label} for d, label in candidates.items()],
+                        mode=SelectSelectorMode.LIST,
+                    )
+                ),
+            }),
+            description_placeholders={"battery_num": str(battery_num)},
+        )
+
+    async def _zendure_mqtt_pick(
+        self,
+        step_id: str,
+        user_input: dict[str, Any] | None,
+        *,
+        battery_num: int,
+        exclude_ids: set[str],
+        on_success,
+    ) -> FlowResult:
+        pending = self._zendure_mqtt_pending
+        if user_input is None or pending is None:
+            return await self._zendure_mqtt_connection(
+                step_id, None, defaults=dict(pending or {}), battery_num=battery_num,
+                exclude_ids=exclude_ids, on_success=on_success,
+            )
+        chosen = {**pending, CONF_ZENDURE_DEVICE_ID: user_input[CONF_ZENDURE_DEVICE_ID]}
+        return await self._zendure_mqtt_connection(
+            step_id, chosen, defaults=chosen, battery_num=battery_num,
+            exclude_ids=exclude_ids, on_success=on_success,
+        )
 
 
 def _parse_optional_float(value: Any) -> float | None:
@@ -1479,7 +1793,9 @@ def _preserve_values_in_error_forms(flow_class):
 
 
 @_preserve_values_in_error_forms
-class MarstekVenusConfigFlow(LegacyDomainMigrationMixin, ConfigFlow, domain=DOMAIN):
+class MarstekVenusConfigFlow(
+    _ZendureMqttStepsMixin, LegacyDomainMigrationMixin, ConfigFlow, domain=DOMAIN
+):
     """Handle a config flow for Omnibattery."""
 
     VERSION = 16
@@ -1742,6 +2058,8 @@ class MarstekVenusConfigFlow(LegacyDomainMigrationMixin, ConfigFlow, domain=DOMA
         if user_input is not None:
             brand = user_input["brand"]
             self._current_battery_data = {"brand": brand}
+            if brand == _ZENDURE_MQTT_BRAND:
+                return await self.async_step_battery_connection_zendure_mqtt()
             if brand == "zendure":
                 return await self.async_step_battery_connection_zendure()
             if brand == "esphome":
@@ -1764,16 +2082,7 @@ class MarstekVenusConfigFlow(LegacyDomainMigrationMixin, ConfigFlow, domain=DOMA
                 {
                     vol.Required("brand", default="marstek"):
                         SelectSelector(SelectSelectorConfig(
-                            options=[
-                                {"value": "marstek", "label": "Marstek Venus"},
-                                {"value": "zendure", "label": "Zendure SolarFlow"},
-                                {"value": "esphome", "label": "Marstek via LilyGo RS485 (ESPHome)"},
-                                {"value": "anker", "label": "Anker SOLIX Solarbank Max AC / 4 E5000 Pro"},
-                                {"value": "sessy", "label": "Sessy"},
-                                {"value": "indevolt", "label": "Indevolt SolidFlex / PowerFlex"},
-                                {"value": "hoymiles", "label": "Hoymiles MQTT"},
-                                {"value": "huawei", "label": "Huawei SUN2000 + LUNA2000"},
-                            ],
+                            options=_brand_options(),
                             mode=SelectSelectorMode.DROPDOWN,
                         )),
                 }
@@ -1878,6 +2187,7 @@ class MarstekVenusConfigFlow(LegacyDomainMigrationMixin, ConfigFlow, domain=DOMA
                     CONF_HOST: host,
                     CONF_PORT: port,
                     "brand": "zendure",
+                    CONF_ZENDURE_TRANSPORT: ZENDURE_TRANSPORT_HTTP,
                     "zendure_model": _detect_zendure_model(product),
                 })
                 return await self.async_step_battery_limits()
@@ -1894,6 +2204,32 @@ class MarstekVenusConfigFlow(LegacyDomainMigrationMixin, ConfigFlow, domain=DOMA
             errors=errors,
             description_placeholders={"battery_num": str(battery_num)},
         )
+
+    async def async_step_battery_connection_zendure_mqtt(
+        self, user_input: dict[str, Any] | None = None
+    ) -> FlowResult:
+        """Step 3b (Zendure Hyper 2000): broker and device for MQTT control."""
+        return await self._zendure_mqtt_connection(
+            "battery_connection_zendure_mqtt", user_input,
+            defaults={}, battery_num=self.battery_index + 1,
+            exclude_ids=_configured_zendure_mqtt_ids(getattr(self, "battery_configs", None)),
+            on_success=self._zendure_mqtt_adopt,
+        )
+
+    async def async_step_battery_connection_zendure_mqtt_pick(
+        self, user_input: dict[str, Any] | None = None
+    ) -> FlowResult:
+        """Step 3b' (Zendure Hyper 2000): choose among the Hypers found."""
+        return await self._zendure_mqtt_pick(
+            "battery_connection_zendure_mqtt", user_input,
+            battery_num=self.battery_index + 1,
+            exclude_ids=_configured_zendure_mqtt_ids(getattr(self, "battery_configs", None)),
+            on_success=self._zendure_mqtt_adopt,
+        )
+
+    async def _zendure_mqtt_adopt(self, data: dict[str, Any]) -> FlowResult:
+        self._current_battery_data.update(data)
+        return await self.async_step_battery_limits()
 
     async def async_step_battery_connection_esphome(
         self, user_input: dict[str, Any] | None = None
@@ -2391,7 +2727,9 @@ class MarstekVenusConfigFlow(LegacyDomainMigrationMixin, ConfigFlow, domain=DOMA
                 if brand in ("zendure", "sessy", "hoymiles"):
                     capacity_default = (
                         _hoymiles_capacity_default(self._current_battery_data)
-                        if brand == "hoymiles" else 0.0
+                        if brand == "hoymiles"
+                        # A Hyper's capacity is read from its packs at setup.
+                        else float(self._current_battery_data.get("battery_capacity_kwh") or 0.0)
                     )
                     merged["battery_capacity_kwh"] = round(float(user_input.get("battery_capacity_kwh", capacity_default)), 2)
                 _apply_mac_tracking(user_input, merged)
@@ -2438,12 +2776,19 @@ class MarstekVenusConfigFlow(LegacyDomainMigrationMixin, ConfigFlow, domain=DOMA
             _schema[vol.Required(CONF_DC_PV_CONNECTED, default=True)] = BooleanSelector()
         if brand not in ("zendure", "anker", "sessy", "hoymiles", "huawei", "indevolt"):
             _schema[vol.Required(CONF_FULL_CHARGE_VOLTAGE_TAPER_ENABLED, default=DEFAULT_FULL_CHARGE_VOLTAGE_TAPER_ENABLED)] = bool
-        if brand == "sessy":
-            # Sessy does not report a nominal capacity or identifiable packs.
+        if brand == "sessy" or (
+            _is_zendure_mqtt(self._current_battery_data)
+            and not _zendure_capacity_detected(self._current_battery_data)
+        ):
+            # Sessy does not report a nominal capacity, and a Hyper whose packs
+            # were not recognised has none to read either; leaving it at 0
+            # silently breaks system SOC, cycles, predictive charging and pricing.
             _schema[vol.Required("battery_capacity_kwh")] = NumberSelector(
                 NumberSelectorConfig(min=0.01, max=100, step=0.01, unit_of_measurement="kWh", mode=NumberSelectorMode.BOX)
             )
-        elif brand in ("zendure", "hoymiles"):
+        elif brand in ("zendure", "hoymiles") and not _zendure_capacity_detected(
+            self._current_battery_data
+        ):
             _schema[
                 vol.Optional(
                     "battery_capacity_kwh",
@@ -3117,6 +3462,8 @@ class MarstekVenusConfigFlow(LegacyDomainMigrationMixin, ConfigFlow, domain=DOMA
             else {}
         )
 
+        if _is_zendure_mqtt(current):
+            return await self.async_step_reconfigure_battery_zendure_mqtt(user_input)
         if current.get("brand", "marstek") == "zendure":
             return await self.async_step_reconfigure_battery_zendure(user_input)
         if current.get("brand", "marstek") == "esphome":
@@ -3267,6 +3614,7 @@ class MarstekVenusConfigFlow(LegacyDomainMigrationMixin, ConfigFlow, domain=DOMA
                 updated[CONF_HOST] = new_host
                 updated[CONF_PORT] = new_port
                 updated["zendure_model"] = _detect_zendure_model(product)
+                updated[CONF_ZENDURE_TRANSPORT] = ZENDURE_TRANSPORT_HTTP
                 self._reconfigure_batteries.append(updated)
                 self.battery_index += 1
 
@@ -3295,6 +3643,53 @@ class MarstekVenusConfigFlow(LegacyDomainMigrationMixin, ConfigFlow, domain=DOMA
             errors=errors,
             description_placeholders={"battery_num": str(battery_num)},
         )
+
+    async def async_step_reconfigure_battery_zendure_mqtt(
+        self, user_input: dict[str, Any] | None = None
+    ) -> FlowResult:
+        """Update broker / device settings for a Zendure Hyper 2000."""
+        entry = self._get_reconfigure_entry()
+        current = entry.data.get("batteries", [])[self.battery_index]
+        return await self._zendure_mqtt_connection(
+            "reconfigure_battery_zendure_mqtt", user_input,
+            defaults=dict(current), battery_num=self.battery_index + 1,
+            exclude_ids=self._zendure_mqtt_reconfigure_exclusions(),
+            on_success=self._zendure_mqtt_reconfigured,
+        )
+
+    async def async_step_reconfigure_battery_zendure_mqtt_pick(
+        self, user_input: dict[str, Any] | None = None
+    ) -> FlowResult:
+        """Choose among the Hypers found while reconfiguring."""
+        return await self._zendure_mqtt_pick(
+            "reconfigure_battery_zendure_mqtt", user_input,
+            battery_num=self.battery_index + 1,
+            exclude_ids=self._zendure_mqtt_reconfigure_exclusions(),
+            on_success=self._zendure_mqtt_reconfigured,
+        )
+
+    def _zendure_mqtt_reconfigure_exclusions(self) -> set[str]:
+        entry = self._get_reconfigure_entry()
+        return _configured_zendure_mqtt_ids(
+            entry.data.get("batteries", []), skip_index=self.battery_index
+        )
+
+    async def _zendure_mqtt_reconfigured(self, data: dict[str, Any]) -> FlowResult:
+        entry = self._get_reconfigure_entry()
+        current_batteries = entry.data.get("batteries", [])
+        current = current_batteries[self.battery_index]
+        old_host, old_port = current.get(CONF_HOST), current.get(CONF_PORT, 0)
+        if old_host and old_host != data[CONF_HOST]:
+            self._migrate_battery_registry_ids(entry, old_host, old_port, data[CONF_HOST], 0)
+        updated = dict(current)
+        updated.update(data)
+        self._reconfigure_batteries.append(updated)
+        self.battery_index += 1
+        if self.battery_index >= len(current_batteries):
+            return self.async_update_reload_and_abort(
+                entry, data_updates={"batteries": self._reconfigure_batteries}
+            )
+        return await self.async_step_reconfigure_battery()
 
     async def async_step_reconfigure_battery_sessy(
         self, user_input: dict[str, Any] | None = None
@@ -3932,7 +4327,7 @@ class MarstekVenusConfigFlow(LegacyDomainMigrationMixin, ConfigFlow, domain=DOMA
 
 
 @_preserve_values_in_error_forms
-class OptionsFlowHandler(OptionsFlow):
+class OptionsFlowHandler(_ZendureMqttStepsMixin, OptionsFlow):
     def __init__(self, config_entry: ConfigEntry) -> None:
         """Initialize options flow."""
         # NOTE: Do NOT set self.config_entry - it's a read-only property from OptionsFlow base class
@@ -4335,7 +4730,7 @@ class OptionsFlowHandler(OptionsFlow):
             if self.battery_index < len(current_batteries)
             else {}
         )
-        current_brand = current_battery.get("brand", "marstek")
+        current_brand = _brand_selector_value(current_battery) if current_battery else "marstek"
 
         if user_input is not None:
             brand = user_input["brand"]
@@ -4346,6 +4741,8 @@ class OptionsFlowHandler(OptionsFlow):
                 CONF_TRACK_MAC: current_battery.get(CONF_TRACK_MAC, False),
                 CONF_MAC: current_battery.get(CONF_MAC, ""),
             }
+            if brand == _ZENDURE_MQTT_BRAND:
+                return await self.async_step_battery_connection_zendure_mqtt()
             if brand == "zendure":
                 return await self.async_step_battery_connection_zendure()
             if brand == "esphome":
@@ -4368,16 +4765,7 @@ class OptionsFlowHandler(OptionsFlow):
                 {
                     vol.Required("brand", default=current_brand):
                         SelectSelector(SelectSelectorConfig(
-                            options=[
-                                {"value": "marstek", "label": "Marstek Venus"},
-                                {"value": "zendure", "label": "Zendure SolarFlow"},
-                                {"value": "esphome", "label": "Marstek via LilyGo RS485 (ESPHome)"},
-                                {"value": "anker", "label": "Anker SOLIX Solarbank Max AC / 4 E5000 Pro"},
-                                {"value": "sessy", "label": "Sessy"},
-                                {"value": "indevolt", "label": "Indevolt SolidFlex / PowerFlex"},
-                                {"value": "hoymiles", "label": "Hoymiles MQTT"},
-                                {"value": "huawei", "label": "Huawei SUN2000 + LUNA2000"},
-                            ],
+                            options=_brand_options(),
                             mode=SelectSelectorMode.DROPDOWN,
                         )),
                 }
@@ -4505,6 +4893,7 @@ class OptionsFlowHandler(OptionsFlow):
                         CONF_HOST: host,
                         CONF_PORT: port,
                         "brand": "zendure",
+                        CONF_ZENDURE_TRANSPORT: ZENDURE_TRANSPORT_HTTP,
                         "zendure_model": _detect_zendure_model(product),
                     })
                     return await self.async_step_battery_limits()
@@ -4538,6 +4927,45 @@ class OptionsFlowHandler(OptionsFlow):
             errors=errors,
             description_placeholders={"battery_num": str(battery_num)},
         )
+
+    async def async_step_battery_connection_zendure_mqtt(
+        self, user_input: dict[str, Any] | None = None
+    ) -> FlowResult:
+        """Configure broker / device settings for a Zendure Hyper 2000."""
+        current_batteries = self.config_entry.data.get("batteries", [])
+        current = (
+            current_batteries[self.battery_index]
+            if self.battery_index < len(current_batteries)
+            else {}
+        )
+        return await self._zendure_mqtt_connection(
+            "battery_connection_zendure_mqtt", user_input,
+            defaults=dict(current), battery_num=self.battery_index + 1,
+            exclude_ids=self._zendure_mqtt_option_exclusions(),
+            on_success=self._zendure_mqtt_adopt,
+        )
+
+    async def async_step_battery_connection_zendure_mqtt_pick(
+        self, user_input: dict[str, Any] | None = None
+    ) -> FlowResult:
+        """Choose among the Hypers found on the broker."""
+        return await self._zendure_mqtt_pick(
+            "battery_connection_zendure_mqtt", user_input,
+            battery_num=self.battery_index + 1,
+            exclude_ids=self._zendure_mqtt_option_exclusions(),
+            on_success=self._zendure_mqtt_adopt,
+        )
+
+    def _zendure_mqtt_option_exclusions(self) -> set[str]:
+        # Batteries already re-saved in this pass, plus the stored ones still
+        # ahead of it; the slot being edited may keep its own device.
+        return _configured_zendure_mqtt_ids(
+            self.config_entry.data.get("batteries", []), skip_index=self.battery_index
+        ) | _configured_zendure_mqtt_ids(getattr(self, "battery_configs", None))
+
+    async def _zendure_mqtt_adopt(self, data: dict[str, Any]) -> FlowResult:
+        self._current_battery_data.update(data)
+        return await self.async_step_battery_limits()
 
     async def async_step_battery_connection_sessy(self, user_input: dict[str, Any] | None = None) -> FlowResult:
         """Configure a Sessy through its local dongle HTTP API."""
@@ -5134,7 +5562,9 @@ class OptionsFlowHandler(OptionsFlow):
                 if brand in ("zendure", "sessy", "hoymiles"):
                     capacity_default = (
                         _hoymiles_capacity_default(self._current_battery_data)
-                        if brand == "hoymiles" else 0.0
+                        if brand == "hoymiles"
+                        # A Hyper's capacity is read from its packs at setup.
+                        else float(self._current_battery_data.get("battery_capacity_kwh") or 0.0)
                     )
                     merged["battery_capacity_kwh"] = round(float(user_input.get("battery_capacity_kwh", capacity_default)), 2)
                 _apply_mac_tracking(user_input, merged)
@@ -5241,7 +5671,10 @@ class OptionsFlowHandler(OptionsFlow):
             ] = BooleanSelector()
         if brand not in ("zendure", "anker", "sessy", "hoymiles", "huawei", "indevolt"):
             _schema[vol.Required(CONF_FULL_CHARGE_VOLTAGE_TAPER_ENABLED, default=defaults[CONF_FULL_CHARGE_VOLTAGE_TAPER_ENABLED])] = bool
-        if brand == "sessy":
+        if brand == "sessy" or (
+            _is_zendure_mqtt(self._current_battery_data)
+            and not _zendure_capacity_detected(self._current_battery_data)
+        ):
             saved_capacity = float(defaults["battery_capacity_kwh"])
             capacity_field = (
                 vol.Required("battery_capacity_kwh", default=saved_capacity)
@@ -5251,7 +5684,9 @@ class OptionsFlowHandler(OptionsFlow):
             _schema[capacity_field] = NumberSelector(
                 NumberSelectorConfig(min=0.01, max=100, step=0.01, unit_of_measurement="kWh", mode=NumberSelectorMode.BOX)
             )
-        elif brand in ("zendure", "hoymiles"):
+        elif brand in ("zendure", "hoymiles") and not _zendure_capacity_detected(
+            self._current_battery_data
+        ):
             _schema[vol.Optional("battery_capacity_kwh", default=defaults["battery_capacity_kwh"])] = NumberSelector(
                 NumberSelectorConfig(min=0, max=100, step=0.01, unit_of_measurement="kWh", mode=NumberSelectorMode.BOX)
             )

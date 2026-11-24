@@ -148,3 +148,25 @@ def test_daily_sources_publish_value_and_reset_date_metadata():
         "total_daily_discharging_energy": 0.8,
         "total_daily_discharging_energy_reset_date": "2026-07-28",
     }
+
+
+def test_synthetic_charge_skips_pack_self_heating(monkeypatch):
+    """Zendure packs that heat themselves draw the heater through the pack
+    input; that energy is not stored, so it must not count as charge."""
+    import custom_components.omnibattery.sensors.calculated_sensors as cs
+
+    clock = iter([100.0, 110.0, 120.0])
+    monkeypatch.setattr(cs.time, "monotonic", lambda: next(clock))
+    sensor = SyntheticEnergySensor.__new__(SyntheticEnergySensor)
+    sensor._direction = "charge"
+    sensor._daily = False
+    sensor._kwh = 0.0
+    sensor._last_mono = None
+    sensor.coordinator = SimpleNamespace(data={"battery_power": 360, "battery_heating": True})
+
+    sensor._accumulate()  # first sample only sets the clock
+    sensor._accumulate()  # heating: 10 s at 360 W not counted
+    assert sensor._kwh == 0.0
+    sensor.coordinator.data = {"battery_power": 360, "battery_heating": False}
+    sensor._accumulate()  # 10 s at 360 W = 0.001 kWh
+    assert sensor._kwh == pytest.approx(0.001)

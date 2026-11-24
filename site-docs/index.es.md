@@ -18,6 +18,7 @@ Comprueba [si tu batería exacta es compatible](compatibility.md) antes de insta
 |---|---|---|
 | **Marstek Venus** | Modbus TCP, Modbus RTU o un puente LilyGo RS-485/ESPHome | [Configuración de Marstek](configuration/batteries/marstek.md) |
 | **Zendure SolarFlow** | API HTTP local | [Configuración de Zendure](configuration/batteries/zendure.md) |
+| **Zendure Hyper 2000** | MQTT a través de Home Assistant o de tu propio broker | [Configuración de Zendure Hyper 2000](configuration/batteries/zendure-hyper.md) |
 | **Anker SOLIX Solarbank** | Modbus TCP | [Configuración de Anker SOLIX](configuration/batteries/anker.md) |
 | **Huawei SUN2000 + LUNA2000** | Modbus TCP a través del inversor | [Configuración de Huawei](configuration/batteries/huawei.md) |
 | **Sessy Home Battery** | API HTTP local a través del dongle Sessy | [Configuración de Sessy](configuration/batteries/sessy.md) |
